@@ -12,7 +12,7 @@ const SkeletonLoading = ({ type }) => {
             </div>
 
             {/* icon Skeleton */}
-            <div className="flex justify-center items-center w-16 h-16 md:w-24 md:h-24 border-2 border-green-0 mb-2">
+            <div className="flex justify-center items-center w-16 h-16 md:w-24 md:h-24 border-2 border-blue-100 mb-2">
               <div className="w-full h-full bg-gray-200 rounded-full"></div>
             </div>
 

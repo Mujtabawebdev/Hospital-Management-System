@@ -23,11 +23,11 @@ router.delete("/delete-medicine/:id", isAdminAuthenticated, deleteMedicine);
 router.put("/update-medicine/:id", isAdminAuthenticated, upload.single("image"), updateMedicine);
 
 // routes of user
-router.get("/get/:id", getSingleMedicine);
-router.get("/shop-by-category/:category", getCategoryMedicines);
+router.get("/list", getAllMedicines);
 router.get("/discount", getHighDiscountMedicines)
-
 router.get("/search-medicine", searchMedicine);
+router.get("/shop-by-category/:category", getCategoryMedicines);
+router.get("/get/:id", getSingleMedicine);
 
 
 export default router;

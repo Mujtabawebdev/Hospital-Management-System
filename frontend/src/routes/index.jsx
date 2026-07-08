@@ -1,4 +1,5 @@
 import { adminRoutes } from "../features/admin/routes/admin.routes.jsx";
+import { aboutRoutes } from "../features/about/routes/about.routes.jsx";
 import { appointmentsRoutes } from "../features/appointments/routes/appointments.routes.jsx";
 import { authRoutes } from "../features/auth/routes/auth.routes.jsx";
 import { cartRoutes } from "../features/cart/routes/cart.routes.jsx";
@@ -10,6 +11,7 @@ import { specialitiesRoutes } from "../features/specialities/routes/specialities
 
 export const appRoutes = [
   ...homeRoutes,
+  ...aboutRoutes,
   ...adminRoutes,
   ...doctorsRoutes,
   ...appointmentsRoutes,

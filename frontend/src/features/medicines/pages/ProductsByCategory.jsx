@@ -1,81 +1,67 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { Products } from "../../../shared/constants/constants";
-import {
-  SkeletonLoading,
-  useLoading,
-  Pagination,
-} from "../../../import-export/ImportExport";
-import { MedicineTile } from "../../../shared/components/ui";
+import { Link, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
+import MedicineCard from "../components/MedicineCard.jsx";
+import { getCategoryMedicines } from "../api/medicineApi";
+import { Button, Card } from "../../../shared/components/ui";
 
 export default function ProductsByCategory() {
-  const { id: category } = useParams();
+  const { id } = useParams();
+  const category = decodeURIComponent(id || "");
   const [products, setProducts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [productsPerPage] = useState(6); // Number of products per page
-  const loading = useLoading(1000);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Filter products based on the category
-    const filteredProducts = Products.filter(
-      (product) => product.category === category
-    );
-    setProducts(filteredProducts);
-  }, [category]);
-
-  // Pagination logic
-  const indexOfLastProduct = currentPage * productsPerPage;
-  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
-  const currentProducts = products.slice(
-    indexOfFirstProduct,
-    indexOfLastProduct
-  );
-
-  // Change page
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
-
-  // Capitalize the first letter of the category name
-  const formattedCategory =
-    category.charAt(0).toUpperCase() + category.slice(1);
+    setLoading(true);
+    getCategoryMedicines(category, currentPage)
+      .then((response) => {
+        setProducts(response?.data || []);
+      })
+      .catch((error) => {
+        toast.error(error.response?.data?.message || "Failed to load category products");
+      })
+      .finally(() => setLoading(false));
+  }, [category, currentPage]);
 
   return (
-    <section className="space-y-4 my-20 max-w-7xl mx-auto">
-      <div className="px-3 md:px-4 lg:px-6 py-2 inline-flex">
-        <h2 className="text-lg md:text-xl lg:text-2xl text-dark_theme font-semibold">
-          {formattedCategory}
-        </h2>
-      </div>
+    <main className="min-h-screen bg-slate-50 px-4 py-10">
+      <section className="mx-auto max-w-7xl">
+        <div className="mb-6 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-wide text-main_theme">
+              Product Category
+            </p>
+            <h1 className="mt-2 text-3xl font-black text-slate-900">{category}</h1>
+          </div>
+          <Link to="/medicines">
+            <Button variant="secondary">Back to Marketplace</Button>
+          </Link>
+        </div>
 
-      {/* Product cards section */}
-      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 justify-items-center gap-6 px-3 md:px-4 lg:px-6 py-2">
         {loading ? (
-          // Render skeleton loading effect for each product card
-          Array.from({ length: 6 }).map((_, index) => (
-            <SkeletonLoading key={index} type="product" />
-          ))
-        ) : currentProducts.length > 0 ? (
-          currentProducts.map((product) => (
-            <MedicineTile
-              key={product.id}
-              image={product.image}
-              name={product.name}
-              price={product.price}
-              description={product.description}
-            />
-          ))
+          <Card className="p-8 text-center text-slate-500">Loading products...</Card>
+        ) : products.length > 0 ? (
+          <MedicineCard products={products} />
         ) : (
-          <p className="text-lg text-center col-span-full">
+          <Card className="p-8 text-center text-slate-500">
             No products found in this category.
-          </p>
+          </Card>
         )}
-      </div>
 
-      {/* Pagination */}
-      <Pagination
-        currentPage={currentPage}
-        totalPages={Math.ceil(products.length / productsPerPage)}
-        onPageChange={paginate}
-      />
-    </section>
+        {products.length === 12 && (
+          <div className="mt-8 flex justify-end gap-3">
+            <Button
+              variant="secondary"
+              disabled={currentPage <= 1}
+              onClick={() => setCurrentPage((page) => page - 1)}
+            >
+              Previous
+            </Button>
+            <Button onClick={() => setCurrentPage((page) => page + 1)}>Next</Button>
+          </div>
+        )}
+      </section>
+    </main>
   );
 }

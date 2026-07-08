@@ -17,6 +17,16 @@ const initialProductForm = {
   image: null,
 };
 
+const formatDate = (date) => {
+  if (!date) return "Not set";
+
+  return new Date(date).toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
+};
+
 function AdminMedicinesPage() {
   const [medicines, setMedicines] = useState([]);
   const [pagination, setPagination] = useState({});
@@ -189,7 +199,7 @@ function AdminMedicinesPage() {
             required
           />
           <Input
-            label="Stock"
+            label="Quantity"
             name="stock"
             type="number"
             min="0"
@@ -252,14 +262,15 @@ function AdminMedicinesPage() {
 
       <Card className="overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[820px] text-left text-sm">
+          <table className="w-full min-w-[920px] text-left text-sm">
             <thead className="bg-slate-100 text-slate-700">
               <tr>
                 <th className="p-3">Medicine</th>
                 <th className="p-3">Category</th>
                 <th className="p-3">Manufacturer</th>
                 <th className="p-3">Price</th>
-                <th className="p-3">Stock</th>
+                <th className="p-3">Quantity</th>
+                <th className="p-3">Expire</th>
                 <th className="p-3">Discount</th>
                 <th className="p-3">Action</th>
               </tr>
@@ -267,7 +278,7 @@ function AdminMedicinesPage() {
             <tbody>
               {medicines.length === 0 ? (
                 <tr>
-                  <td className="p-5 text-center text-slate-500" colSpan={7}>
+                  <td className="p-5 text-center text-slate-500" colSpan={8}>
                     No medicines found.
                   </td>
                 </tr>
@@ -294,6 +305,7 @@ function AdminMedicinesPage() {
                       <td className="p-3">{medicine.manufacturer}</td>
                       <td className="p-3">Rs {medicine.price}</td>
                       <td className="p-3">{medicine.stock}</td>
+                      <td className="p-3">{formatDate(medicine.expiryDate)}</td>
                       <td className="p-3">{medicine.discount}%</td>
                       <td className="p-3">
                         <div className="flex gap-2">
@@ -312,7 +324,7 @@ function AdminMedicinesPage() {
                     </tr>
                     {editingId === medicine._id && (
                       <tr className="border-t border-slate-100 bg-slate-50">
-                        <td className="p-4" colSpan={7}>
+                        <td className="p-4" colSpan={8}>
                           <form onSubmit={handleUpdate} className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
                             <Input label="Name" name="name" value={editForm.name} onChange={handleEditChange} required />
                             <Input label="Price" name="price" type="number" min="0" value={editForm.price} onChange={handleEditChange} required />
@@ -326,7 +338,7 @@ function AdminMedicinesPage() {
                             </Select>
                             <Input label="Manufacturer" name="manufacturer" value={editForm.manufacturer} onChange={handleEditChange} required />
                             <Input label="Expiry date" name="expiryDate" type="date" value={editForm.expiryDate} onChange={handleEditChange} required />
-                            <Input label="Stock" name="stock" type="number" min="0" value={editForm.stock} onChange={handleEditChange} required />
+                            <Input label="Quantity" name="stock" type="number" min="0" value={editForm.stock} onChange={handleEditChange} required />
                             <Input label="Discount" name="discount" type="number" min="0" value={editForm.discount} onChange={handleEditChange} />
                             <Input label="New image" name="image" type="file" accept="image/*" onChange={handleEditChange} />
                             <Textarea label="Description" name="description" value={editForm.description} onChange={handleEditChange} className="md:col-span-2 xl:col-span-4" rows={3} required />

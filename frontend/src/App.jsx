@@ -14,11 +14,16 @@ const renderRoute = (route) => (
 
 function AppShell() {
   const location = useLocation();
-  const isAdminPage = location.pathname.startsWith("/admin");
+  const hidePublicNavbar = [
+    "/admin",
+    "/doctor",
+    "/patient",
+    "/appointments",
+  ].some((path) => location.pathname.startsWith(path));
 
   return (
     <AppContext>
-      {!isAdminPage && <Navbar />}
+      {!hidePublicNavbar && <Navbar />}
       <Routes>
         {appRoutes.map(renderRoute)}
       </Routes>

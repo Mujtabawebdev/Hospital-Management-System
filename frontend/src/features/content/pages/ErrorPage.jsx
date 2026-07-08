@@ -15,7 +15,7 @@ export default function ErrorPage() {
       <h1 className="mt-4 text-center mb-4 text-2xl font-bold">
         Try searching or go to{" "}
         <a
-          className="text-teal-600/100 underline transition ease-in-out hover:text-green-600/100 duration-300 "
+          className="text-blue-600 underline transition duration-300 ease-in-out hover:text-blue-700"
           href="/"
         >
           Medi-Hub's Homepage

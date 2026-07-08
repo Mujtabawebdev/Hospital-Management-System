@@ -1,83 +1,122 @@
-import React, { useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
-import { AddtoUserCart, getMedicines } from "../api/medicineApi";
+import React, { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
+import { CalendarDays, Factory, Package, Tags } from "lucide-react";
 import { toast } from "react-toastify";
-import { Button } from "../../../shared/components/ui";
-function SingleMedicine() {
-  const [product, setproduct] = useState({})
-  const productId = useParams().id
-  const [loading, setLoading] = useState(true)
-  const navigate = useNavigate()
-  console.log(productId);
+import { getMedicines } from "../api/medicineApi";
+import { Button, Card } from "../../../shared/components/ui";
 
-  const fetchProductDetails = async () => {
-    setLoading(true)
-    getMedicines(productId).then((res) => {
-      setLoading(false)
-      console.log(res);
-      setproduct(res.data)
-    }).catch((err) => {
-      console.log(err);
-    })
-  }
+const formatDate = (date) => {
+  if (!date) return "Not set";
+
+  return new Date(date).toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
+};
+
+const getDiscountedPrice = (medicine) => {
+  const price = Number(medicine?.price || 0);
+  const discount = Number(medicine?.discount || 0);
+
+  return Math.max(price - discount, 0);
+};
+
+function SingleMedicine() {
+  const { id: productId } = useParams();
+  const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchProductDetails()
-  }, [productId])
-
-  const handleAddToCart = async (e, id) => {
-    try {
-      await AddtoUserCart({
-        medicineId: productId,
-        quantity: 1,
-        price: product.price,
-        discount: product.discount || 0
+    setLoading(true);
+    getMedicines(productId)
+      .then((response) => {
+        setProduct(response?.data || null);
       })
-      toast.success("Medicine added to cart");
-    } catch (error) {
-      toast.error(error.response?.data?.message || "Please login before adding medicine");
-      navigate("/login");
-    }
+      .catch((error) => {
+        toast.error(error.response?.data?.message || "Failed to load medicine details");
+      })
+      .finally(() => setLoading(false));
+  }, [productId]);
+
+  if (loading) {
+    return (
+      <main className="min-h-screen bg-slate-50 px-4 py-10">
+        <Card className="mx-auto max-w-5xl p-8 text-center text-slate-500">Loading medicine...</Card>
+      </main>
+    );
   }
 
-  const handleBuyProduct = async () => {
-    try {
-      await AddtoUserCart({
-        medicineId: productId,
-        quantity: 1,
-        price: product.price,
-        discount: product.discount || 0
-      })
-      navigate("/medicines/cart")
-    } catch (error) {
-      toast.error(error.response?.data?.message || "Please login before buying medicine");
-      navigate("/login");
-    }
+  if (!product) {
+    return (
+      <main className="min-h-screen bg-slate-50 px-4 py-10">
+        <Card className="mx-auto max-w-5xl p-8 text-center text-slate-500">Medicine not found.</Card>
+      </main>
+    );
   }
+
   return (
-    <>
-      <div className="container mx-auto my-5 p-10 relative">
-        <div className="row flex flex-col md:flex-row justify-center gap-2">
-          <div className="col-md-6">
-            <img src={product.image} alt={product.name} className="img-fluid" />
+    <main className="min-h-screen bg-slate-50 px-4 py-10">
+      <section className="mx-auto max-w-6xl">
+        <Link to="/medicines">
+          <Button variant="secondary" size="sm">Back to Marketplace</Button>
+        </Link>
+
+        <Card className="mt-5 overflow-hidden">
+          <div className="grid gap-6 md:grid-cols-[420px_1fr]">
+            <div className="bg-slate-100">
+              <img src={product.image} alt={product.name} className="h-full min-h-96 w-full object-cover" />
+            </div>
+
+            <div className="space-y-6 p-6 md:p-8">
+              <div>
+                <p className="text-sm font-semibold uppercase tracking-wide text-main_theme">{product.category}</p>
+                <h1 className="mt-2 text-3xl font-black text-slate-900">{product.name}</h1>
+                <p className="mt-3 text-slate-600">{product.description}</p>
+              </div>
+
+              <div className="grid gap-3 sm:grid-cols-2">
+                <div className="rounded-md border border-slate-200 p-4">
+                  <p className="flex items-center gap-2 text-sm font-semibold text-slate-500">
+                    <Package className="h-4 w-4 text-main_theme" aria-hidden="true" />
+                    Quantity
+                  </p>
+                  <p className="mt-2 text-2xl font-black text-slate-900">{product.stock || 0}</p>
+                </div>
+                <div className="rounded-md border border-slate-200 p-4">
+                  <p className="flex items-center gap-2 text-sm font-semibold text-slate-500">
+                    <CalendarDays className="h-4 w-4 text-main_theme" aria-hidden="true" />
+                    Expire Date
+                  </p>
+                  <p className="mt-2 text-2xl font-black text-slate-900">{formatDate(product.expiryDate)}</p>
+                </div>
+                <div className="rounded-md border border-slate-200 p-4">
+                  <p className="flex items-center gap-2 text-sm font-semibold text-slate-500">
+                    <Factory className="h-4 w-4 text-main_theme" aria-hidden="true" />
+                    Manufacturer
+                  </p>
+                  <p className="mt-2 text-lg font-black text-slate-900">{product.manufacturer}</p>
+                </div>
+                <div className="rounded-md border border-slate-200 p-4">
+                  <p className="flex items-center gap-2 text-sm font-semibold text-slate-500">
+                    <Tags className="h-4 w-4 text-main_theme" aria-hidden="true" />
+                    Price
+                  </p>
+                  <p className="mt-2 text-2xl font-black text-slate-900">Rs {getDiscountedPrice(product)}</p>
+                  {Number(product.discount || 0) > 0 && (
+                    <p className="text-sm text-slate-400">
+                      <span className="line-through">Rs {product.price}</span>
+                      <span className="ml-2 text-main_theme">Save Rs {product.discount}</span>
+                    </p>
+                  )}
+                </div>
+              </div>
+            </div>
           </div>
-          <div className="col-md-6 flex flex-col justify-center gap-4">
-            <h1 className='text-xl font-bold'>{product.name}</h1>
-            <p className='text-lg text-gray-800'>{product.description}</p>
-            <p className='text-lg'>Price: {product.price}</p>
-            <p className='text-lg'>Discount: {product.discount}</p>
-            <p className='text-lg'>Stock: {product.stock}</p>
-            <Button variant="blue" size="lg" onClick={handleAddToCart}>
-              Add to Cart
-            </Button>
-            <Button variant="green" size="lg" onClick={handleBuyProduct}>
-              Buy Now
-            </Button>
-          </div>
-        </div>
-      </div>
-    </>
-  )
+        </Card>
+      </section>
+    </main>
+  );
 }
 
-export default SingleMedicine
+export default SingleMedicine;

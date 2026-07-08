@@ -1,8 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import api from "../../../shared/api/httpClient";
 import { Button, Input, Select, Textarea } from "../../../shared/components/ui";
+import { fetchSpecialties } from "../../specialities/api";
+import { getSpecialityOptions } from "../../specialities/data/specialities";
+
 
 const initialForm = {
   firstName: "",
@@ -50,14 +53,33 @@ function DoctorSignupPage() {
   const [formData, setFormData] = useState(initialForm);
   const [submitting, setSubmitting] = useState(false);
   const [previewUrl, setPreviewUrl] = useState("");
+  const [specialityOptions, setSpecialityOptions] = useState(getSpecialityOptions());
 
-  React.useEffect(() => {
+  useEffect(() => {
+    let isMounted = true;
+
+    fetchSpecialties()
+      .then((items) => {
+        if (isMounted) setSpecialityOptions(getSpecialityOptions(items));
+      })
+      .catch(() => {
+        if (isMounted) setSpecialityOptions(getSpecialityOptions());
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  useEffect(() => {
     return () => {
       if (previewUrl?.startsWith("blob:")) {
         URL.revokeObjectURL(previewUrl);
       }
     };
   }, [previewUrl]);
+
+
 
   const handleInputChange = (event) => {
     const { name, value, files, type } = event.target;
@@ -186,7 +208,14 @@ function DoctorSignupPage() {
             <option value="Other">Other</option>
           </Select>
           <Input label="Qualification" name="qualification" value={formData.qualification} onChange={handleInputChange} minLength={2} maxLength={200} placeholder="MBBS, FCPS" required />
-          <Input label="Specialization" name="specialization" value={formData.specialization} onChange={handleInputChange} minLength={2} maxLength={120} placeholder="Cardiology" required />
+          <Select label="Specialization" name="specialization" value={formData.specialization} onChange={handleInputChange} required>
+            <option value="">Select Specialization</option>
+            {specialityOptions.map((speciality) => (
+              <option key={speciality} value={speciality}>
+                {speciality}
+              </option>
+            ))}
+          </Select>
           <Input label="Experience" type="number" min="0" max="70" name="experience" value={formData.experience} onChange={handleInputChange} required />
           <Input label="Hospital" name="hospital" value={formData.hospital} onChange={handleInputChange} minLength={2} maxLength={160} required />
           <Input label="Clinic" name="clinic" value={formData.clinic} onChange={handleInputChange} maxLength={160} />

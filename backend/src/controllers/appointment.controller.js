@@ -8,11 +8,15 @@ import { DoctorSchedule, SCHEDULE_STATUS } from "../models/doctor-schedule.model
 // Controller function for booking an appointment
 export const bookAppointment = asyncHandler(async (req, res, next) => {
     const patient = req.user;
-    const { doctorId, scheduleId, city, pincode, appointmentDate, department, issue } = req.body;
+    const { doctorId, scheduleId, city, pincode, appointmentDate, department, issue, startTime, endTime } = req.body;
 
     // Check if all required fields are provided
     if (!doctorId || !city || !pincode || !appointmentDate || !department) {
         throw new ApiError(400, "Please provide all required fields");
+    }
+
+    if (!scheduleId && !startTime) {
+        throw new ApiError(400, "Please select appointment time");
     }
 
     const doctor = await Doctor.findById(doctorId);
@@ -61,8 +65,8 @@ export const bookAppointment = asyncHandler(async (req, res, next) => {
         city,
         pincode,
         appointmentDate: schedule?.date || appointmentDate,
-        startTime: schedule?.startTime,
-        endTime: schedule?.endTime,
+        startTime: schedule?.startTime || startTime,
+        endTime: schedule?.endTime || endTime,
         checkupTime: schedule?.date || appointmentDate,
         department: department || doctor.department?.name || doctor.specialization,
         issue,

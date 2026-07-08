@@ -13,6 +13,63 @@ const getHighDiscountMedicines = async (page) => {
     }
 }
 
+const getMarketplaceMedicines = async ({ page = 1, limit = 12, search = "", category = "" } = {}) => {
+    try {
+        if (category) {
+            const response = await api.get(`/medicines/shop-by-category/${category}`, {
+                params: {
+                    page,
+                    limit,
+                }
+            });
+            const medicines = response.data?.data || [];
+            return {
+                data: {
+                    medicines,
+                    pagination: {
+                        page,
+                        limit,
+                        total: medicines.length,
+                        totalPages: medicines.length >= limit ? page + 1 : page,
+                    }
+                }
+            };
+        }
+
+        const response = await api.get("/medicines/list", {
+            params: {
+                page,
+                limit,
+                search,
+                category,
+            }
+        });
+        return response.data;
+    } catch (error) {
+        if (!category && error.response?.status === 404) {
+            const fallbackResponse = await api.get("/medicines/search-medicine", {
+                params: {
+                    search,
+                }
+            });
+            const medicines = fallbackResponse.data?.data || [];
+            return {
+                data: {
+                    medicines,
+                    pagination: {
+                        page: 1,
+                        limit: medicines.length,
+                        total: medicines.length,
+                        totalPages: 1,
+                    }
+                }
+            };
+        }
+
+        throw error;
+    }
+}
+
 const getMedicines = async (id) => {
     try {
         console.log(id);
@@ -27,7 +84,8 @@ const getCategoryMedicines = async (category, page) => {
     try {
         const response = await api.get(`/medicines/shop-by-category/${category}`, {
             params: {
-                page: page
+                page: page,
+                limit: 12,
             }
         });
         return response.data;
@@ -107,6 +165,7 @@ const GetMedicineOrders = async () => {
 }
 export {
     getHighDiscountMedicines,
+    getMarketplaceMedicines,
     getCategoryMedicines,
     getMedicines,
     deleteFromUserCart,

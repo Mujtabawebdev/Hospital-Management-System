@@ -10,20 +10,20 @@ const sections = [
   },
   {
     title: "Secure User Authentication",
-    titleClassName: "text-green-800",
-    cardClassName: "bg-green-100",
+    titleClassName: "text-blue-800",
+    cardClassName: "bg-blue-50",
     body: "Implemented robust user authentication and authorization functionalities to ensure secure access to patient and doctor and admin portals.",
   },
   {
     title: "File Upload Management with Cloud Services",
-    titleClassName: "text-yellow-800",
-    cardClassName: "bg-yellow-100",
+    titleClassName: "text-blue-800",
+    cardClassName: "bg-blue-100",
     body: "Utilized Multer and integrated Cloudinary to efficiently handle file uploads, particularly images, ensuring optimal storage, retrieval, and user experience.",
   },
   {
     title: "Version Control with Git",
-    titleClassName: "text-purple-800",
-    cardClassName: "bg-purple-100",
+    titleClassName: "text-blue-800",
+    cardClassName: "bg-blue-50",
     body: "Utilized Git for version control, enabling efficient project tracking and management of code changes throughout the development lifecycle.",
   },
   {

@@ -17,17 +17,17 @@ export default {
         }
       },
       colors: {
-        dark_theme: "#113C49",
-        main_theme: "#03565A",
-        light_theme: "#B3DAD9",
-        pastel_blue: "#E3EFFC",
-        pastel_yellow: "#FDF1DB",
-        pastel_pink: "#FCEDF2",
-        cart_orange: "#FF8945",
+        dark_theme: "#0f1f44",
+        main_theme: "#2563eb",
+        light_theme: "#eff6ff",
+        pastel_blue: "#dbeafe",
+        pastel_yellow: "#eff6ff",
+        pastel_pink: "#f8fbff",
+        cart_orange: "#2563eb",
         text: "#ffffff",
-        text_grey: "#464646",
-        medicine_banner: "#162C2A",
-        testimonial_img_bg: "#579D93",
+        text_grey: "#64748b",
+        medicine_banner: "#0f1f44",
+        testimonial_img_bg: "#bfdbfe",
       },
       // height:{
       //   heroHeihgt:"calc"

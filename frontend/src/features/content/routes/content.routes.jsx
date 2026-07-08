@@ -1,5 +1,5 @@
-import AboutUsPage from "../pages/AboutUsPage.jsx";
-import ContactPage from "../pages/ContactPage.jsx";
+import AboutPage from "../../about/pages/AboutPage.jsx";
+import ContactPage from "../../contact/pages/ContactPage.jsx";
 import ErrorPage from "../pages/ErrorPage.jsx";
 import FaqsPage from "../pages/FaqsPage.jsx";
 import PrivacyPolicyPage from "../pages/PrivacyPolicyPage.jsx";
@@ -12,7 +12,7 @@ export const contentRoutes = [
   },
   {
     path: "/aboutus",
-    element: <AboutUsPage />,
+    element: <AboutPage />,
   },
   {
     path: "/contact",

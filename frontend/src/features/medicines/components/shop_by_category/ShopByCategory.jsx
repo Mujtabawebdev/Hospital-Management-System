@@ -27,7 +27,7 @@ export default function ShopByCategory() {
           : Category.map((category, index) => (
               <Link
                 key={index}
-                to={`/medicines/shop_by_category${category.Url.toLowerCase()}`}
+                to={`/medicines/shop_by_category/${encodeURIComponent(category.name)}`}
               >
                 <MedicineTile image={category.image} name={category.name} />
               </Link>

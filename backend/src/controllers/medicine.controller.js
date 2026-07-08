@@ -55,7 +55,8 @@ export const addNewMedicine = asyncHandler(async (req, res) => {
 //! list medicines for admin marketplace management
 export const getAllMedicines = asyncHandler(async (req, res) => {
     const page = parseInt(req.query.page, 10) || 1;
-    const limit = parseInt(req.query.limit, 10) || 20;
+    const requestedLimit = parseInt(req.query.limit, 10) || 20;
+    const limit = Math.min(Math.max(requestedLimit, 1), 500);
     const skip = (page - 1) * limit;
     const search = validator.escape(req.query.search || "");
     const category = validator.escape(req.query.category || "");

@@ -1,22 +1,61 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import { Button, Card, Input, Textarea } from "../../../shared/components/ui";
+import { Button, Card, Input, Select, Textarea } from "../../../shared/components/ui";
 import {
   bookDoctorAppointment,
   getAvailableDoctorSchedule,
 } from "../../doctors/api/doctorDashboardApi.js";
+import { fetchSpecialties } from "../../specialities/api";
+import { getSpecialityOptions } from "../../specialities/data/specialities";
+
+const appointmentTimes = [
+  "08:00 AM",
+  "09:00 AM",
+  "10:00 AM",
+  "11:00 AM",
+  "12:00 PM",
+  "01:00 PM",
+  "02:00 PM",
+  "03:00 PM",
+  "04:00 PM",
+  "05:00 PM",
+  "06:00 PM",
+  "07:00 PM",
+  "08:00 PM",
+  "09:00 PM",
+  "10:00 PM",
+  "11:00 PM",
+  "12:00 AM",
+];
+
+const getEndTime = (time) => {
+  if (!time) return undefined;
+  const [clock, period] = time.split(" ");
+  const [hourText, minuteText] = clock.split(":");
+  let hour = Number(hourText);
+  const minute = Number(minuteText);
+
+  if (period === "PM" && hour !== 12) hour += 12;
+  if (period === "AM" && hour === 12) hour = 0;
+
+  const date = new Date(2000, 0, 1, hour, minute + 30);
+  return date.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: true });
+};
 
 function BookAppointmentPage() {
   const { doctorId } = useParams();
   const navigate = useNavigate();
+  const { state } = useLocation();
   const [slots, setSlots] = useState([]);
+  const [departmentOptions, setDepartmentOptions] = useState(getSpecialityOptions());
   const [form, setForm] = useState({
     scheduleId: "",
-    appointmentDate: "",
+    appointmentDate: state?.appointmentDate || "",
+    startTime: state?.startTime || "",
     city: "",
     pincode: "",
-    department: "General",
+    department: state?.department || "General",
     issue: "",
   });
 
@@ -25,6 +64,22 @@ function BookAppointmentPage() {
       .then(setSlots)
       .catch((error) => toast.error(error.response?.data?.message || "Failed to load doctor slots"));
   }, [doctorId]);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    fetchSpecialties()
+      .then((items) => {
+        if (isMounted) setDepartmentOptions(getSpecialityOptions(items));
+      })
+      .catch(() => {
+        if (isMounted) setDepartmentOptions(getSpecialityOptions());
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const selectedSlot = slots.find((slot) => slot._id === form.scheduleId);
   const canBook = Boolean(form.scheduleId || form.appointmentDate);
@@ -43,6 +98,8 @@ function BookAppointmentPage() {
         doctorId,
         scheduleId: form.scheduleId || undefined,
         appointmentDate: selectedSlot?.date || form.appointmentDate,
+        startTime: selectedSlot?.startTime || form.startTime,
+        endTime: selectedSlot?.endTime || getEndTime(form.startTime),
       });
       toast.success("Appointment booked");
       navigate("/appointments");
@@ -63,7 +120,7 @@ function BookAppointmentPage() {
                 <button
                   type="button"
                   key={slot._id}
-                  onClick={() => setForm((current) => ({ ...current, scheduleId: slot._id }))}
+                  onClick={() => setForm((current) => ({ ...current, scheduleId: slot._id, startTime: "" }))}
                   className={`rounded-md border p-3 text-left ${
                     form.scheduleId === slot._id
                       ? "border-main_theme bg-light_theme"
@@ -92,9 +149,30 @@ function BookAppointmentPage() {
               required={!form.scheduleId}
               disabled={Boolean(form.scheduleId)}
             />
+            <Select
+              label="Preferred Time"
+              name="startTime"
+              value={form.startTime}
+              onChange={handleChange}
+              required={!form.scheduleId}
+              disabled={Boolean(form.scheduleId)}
+            >
+              <option value="">Select Time</option>
+              {appointmentTimes.map((time) => (
+                <option key={time} value={time}>
+                  {time}
+                </option>
+              ))}
+            </Select>
             <Input label="City" name="city" value={form.city} onChange={handleChange} required />
             <Input label="Pincode" name="pincode" value={form.pincode} onChange={handleChange} required />
-            <Input label="Department" name="department" value={form.department} onChange={handleChange} required />
+            <Select label="Department" name="department" value={form.department} onChange={handleChange} required>
+              {departmentOptions.map((department) => (
+                <option key={department} value={department}>
+                  {department}
+                </option>
+              ))}
+            </Select>
           </div>
           <Textarea label="Issue" name="issue" value={form.issue} onChange={handleChange} rows={4} />
           <Button type="submit" disabled={!canBook}>Book Appointment</Button>

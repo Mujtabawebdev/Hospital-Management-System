@@ -1,28 +1,32 @@
 import React, { useContext, useState } from "react";
-import { NavLink } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
-
-// react icons
-import {
-  FaDiscord,
-  FaGithub,
-  FaLinkedinIn,
-  FaBars,
-  FaTimes,
-} from "react-icons/fa";
-import { IoCartOutline } from "react-icons/io5";
-import { FaRegCalendarCheck, FaRegHeart } from "react-icons/fa";
-import { LuBox } from "react-icons/lu";
-import { IoIosLogOut } from "react-icons/io";
-import { FaRegCircleUser } from "react-icons/fa6";
+import { NavLink, useNavigate } from "react-router-dom";
+import { LogOut, Menu, Plus, UserRound, X } from "lucide-react";
 import { Context } from "../context/AppContext";
 import { logoutCurrentUser } from "../../features/auth/api/authApi.js";
 
+const navItems = [
+  { to: "/", label: "Home" },
+  { to: "/specialities", label: "Services" },
+  { to: "/alldoctors", label: "Doctors" },
+  { to: "/medicines", label: "Marketplace" },
+  { to: "/medicines", label: "Medicines" },
+  { to: "/about", label: "About" },
+  { to: "/contact", label: "Contact" },
+];
+
 function Navbar() {
   const { isAuthenticated, setIsAuthenticated, setUser, user } = useContext(Context);
-  const handleLogIn = async () => {
-    console.log("working");
-  };
+  const navigate = useNavigate();
+  const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isAccountOpen, setAccountOpen] = useState(false);
+
+  const profilePath =
+    user?.role === "Admin"
+      ? "/admin/profile"
+      : user?.role === "Doctor"
+      ? "/doctor/profile"
+      : "/patient/profile";
+
   const handleLogOut = async () => {
     try {
       await logoutCurrentUser(user?.role);
@@ -34,267 +38,135 @@ function Navbar() {
     localStorage.removeItem("user");
     setIsAuthenticated(false);
     setUser({});
+    setAccountOpen(false);
+    setMobileMenuOpen(false);
     navigate("/login");
   };
 
-  const navigate = useNavigate();
+  const linkClass = ({ isActive }) =>
+    `relative px-1 py-2 text-sm font-semibold transition ${
+      isActive ? "text-[#2563eb] after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-full after:rounded-full after:bg-[#2563eb]" : "text-[#0f1f44]/80 hover:text-[#2563eb]"
+    }`;
 
-  // state to manage drop down menu
-  const [isDropdownOpen, setDropdownOpen] = useState(false);
-  const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  // Nav items
-  const navItems = [
-    { to: "/", label: "Home" },
-    { to: "/alldoctors", label: "All Doctors" },
-    { to: "/specialities", label: "Specialities" },
-    { to: "/medicines", label: "Marketplace" },
-    { to: "/medicines", label: "Medicines" },
-    { to: "/appointment", label: "Appointment" },
-    { to: "/contact", label: "Contact" },
-  ];
-
-  const navLinkClass = ({ isActive }) =>
-    `text-sm font-semibold relative cursor-pointer before:block before:absolute before:bottom-[-4px] before:left-0 before:w-0 before:h-0.5 before:rounded-full before:bg-text before:transition-all before:delay-150 before:ease-in-out hover:before:w-full hover:text-dark_theme ${
-      isActive ? "text-dark_theme" : "text-main_theme"
-    } `;
-
-  // mobile menu toggle
-  const toggleMobileMenu = () => {
-    setMobileMenuOpen(!isMobileMenuOpen);
-  };
-
-  const profilePath =
-    user?.role === "Admin"
-      ? "/admin/profile"
-      : user?.role === "Doctor"
-      ? "/doctor/profile"
-      : "/patient/profile";
-
-  // Dropdown menus
-  const dropdownMenus = [
-    { to: profilePath, label: "My Profile", icon: FaRegCircleUser },
-    { to: "/appointments", label: "Appointments", icon: FaRegCalendarCheck },
-    { to: "medicines/wishlist", label: "Wishlist", icon: FaRegHeart },
-    { to: "/medicines/order_history", label: "Orders", icon: LuBox },
-  ];
-
-  // mouse events on drop down menu
-  const handleMouseEnter = () => {
-    setDropdownOpen(true);
-  };
-
-  const handleMouseLeave = () => {
-    setDropdownOpen(false);
-  };
-
-  const handleNavigation = () => {
-    navigate("/medicines/cart");
-  };
-
-  const socialLinks = [
-    {
-      to: "https://github.com/itsmohit097/medi-hub",
-      label: "github",
-      icon: FaGithub,
-    },
-    {
-      to: "https://www.linkedin.com/in/itsmohit097/",
-      label: "linkedin",
-      icon: FaLinkedinIn,
-    },
-    { to: "https://discord.gg/krQd2Fss", label: "discord", icon: FaDiscord },
-  ];
+  const closeMobileMenu = () => setMobileMenuOpen(false);
 
   return (
-    <div className="w-full h-[8vh] sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto flex items-center justify-between px-3 md:px-4 h-full">
-        {/* logo */}
-        <NavLink to="/">
-          <h1 className="text-2xl sm:text-3xl text-dark_theme tracking-wide font-bold">
-            Medicare Hub
-          </h1>
+    <header className="sticky top-0 z-50 bg-white/80 px-4 py-3 backdrop-blur-xl">
+      <nav className="mx-auto flex h-[72px] max-w-7xl items-center justify-between rounded-2xl border border-slate-200 bg-white px-5 shadow-lg shadow-slate-200/70 md:px-7">
+        <NavLink to="/" className="flex items-center gap-3" onClick={closeMobileMenu}>
+          <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-sky-400 to-[#2563eb] text-white shadow-md shadow-blue-200">
+            <Plus className="h-7 w-7" strokeWidth={3} aria-hidden="true" />
+          </span>
+          <span className="text-2xl font-black tracking-tight text-[#0f1f44]">
+            Medi<span className="text-[#2563eb]">Hub</span>
+          </span>
         </NavLink>
 
-        {/* Nav Menus */}
-        <div className="hidden lg:flex items-center justify-between gap-8">
-          <ul className="flex gap-8 items-center">
-            {navItems.map((navItem, index) => (
-              <li key={index}>
-                <NavLink to={navItem.to} className={navLinkClass}>
-                  {navItem.label}
-                </NavLink>
-              </li>
-            ))}
-            <li
-              className="relative hover:scale-105"
-              onMouseEnter={handleMouseEnter}
-              onMouseLeave={handleMouseLeave}
-            >
-              {isAuthenticated ? (
-                <button
-                  type="button"
-                  className="text-md font-semibold relative cursor-pointer rounded flex items-center border border-dark_theme text-dark_theme px-4 py-2 gap-2 max-w-[150px]"
-                >
-                  <FaRegCircleUser className="text-dark_theme" />
-                  <span className="truncate">Account</span>
-                </button>
-              ) : (
-                <NavLink
-                  to="/login"
-                  className="text-md font-semibold relative cursor-pointer rounded flex items-center border border-dark_theme text-dark_theme px-4 py-2 gap-2 max-w-[150px]"
-                  onClick={handleLogIn}
-                >
-                  <FaRegCircleUser className="text-dark_theme" />
-                  <span className="truncate">Login</span>
-                </NavLink>
-              )}
+        <div className="hidden items-center gap-10 lg:flex">
+          {navItems.map((item) => (
+            <NavLink key={item.to} to={item.to} className={linkClass}>
+              {item.label}
+            </NavLink>
+          ))}
+        </div>
 
-              {/* Dropdown Menus */}
-              {isAuthenticated && isDropdownOpen && (
-                <div
-                  className="absolute left-0 mt-0 w-56 bg-light_theme border border-dark_theme rounded shadow-lg z-50"
-                  onMouseEnter={handleMouseEnter}
-                >
-                  {/* Drop down menu items */}
-                  {dropdownMenus.map((menu, index) => (
-                    <NavLink
-                      key={index}
-                      to={menu.to}
-                      className="flex items-center px-4 py-3 gap-2 text-sm font-medium text-dark_theme hover:bg-main_theme/10"
-                    >
-                      {menu.icon && (
-                        <menu.icon className="text-dark_theme size-4" />
-                      )}
-                      {menu.label}
-                    </NavLink>
-                  ))}
+        <div className="hidden items-center gap-3 lg:flex">
+          {isAuthenticated ? (
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => setAccountOpen((current) => !current)}
+                className="inline-flex items-center gap-2 rounded-xl bg-[#2563eb] px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-500/20 transition hover:bg-blue-700"
+              >
+                <UserRound className="h-4 w-4" aria-hidden="true" />
+                Account
+              </button>
+              {isAccountOpen && (
+                <div className="absolute right-0 mt-3 w-52 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xl">
+                  <NavLink
+                    to={profilePath}
+                    className="block px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-blue-50"
+                    onClick={() => setAccountOpen(false)}
+                  >
+                    My Profile
+                  </NavLink>
                   <button
                     type="button"
                     onClick={handleLogOut}
-                    className="flex w-full items-center gap-2 px-4 py-3 text-left text-sm font-medium text-dark_theme hover:bg-main_theme/10"
+                    className="flex w-full items-center gap-2 px-4 py-3 text-left text-sm font-semibold text-slate-700 hover:bg-blue-50"
                   >
-                    <IoIosLogOut className="text-dark_theme size-4" />
+                    <LogOut className="h-4 w-4" aria-hidden="true" />
                     Logout
                   </button>
                 </div>
               )}
-            </li>
-          </ul>
-        </div>
-
-        {/* Mobile Menu Toggle button */}
-        <div className="lg:hidden inline-flex">
-          <button onClick={toggleMobileMenu} className="text-dark_theme">
-            {isMobileMenuOpen ? (
-              <FaTimes
-                size={26}
-                className="rounded-sm border border-dark_theme bg-light_theme"
-              />
-            ) : (
-              <FaBars size={26} />
-            )}
-          </button>
-        </div>
-
-        {/* Social Icons and Cart (desktop) */}
-        <div className="hidden lg:flex gap-3 items-center relative">
-          <div
-            onClick={handleNavigation}
-            className="cursor-pointer"
-            role="button"
-          >
-            <IoCartOutline className="text-dark_theme size-8 hidden md:block mr-1" />
-            <div className="absolute bottom-4 left-4 border border-main_theme rounded-full cursor-pointer z-50 bg-main_theme/90 text-light_theme">
-              <span className="px-2 py-2 text-xs font-medium">7</span>
             </div>
-          </div>
-
-          {socialLinks.map((socialLink, index) => (
-            <NavLink key={index} to={socialLink.to} target="_blank">
-              <socialLink.icon className="text-dark_theme/90 size-5 hidden md:block hover:scale-110" />
+          ) : (
+            <NavLink
+              to="/login"
+              className="inline-flex items-center gap-2 rounded-xl bg-[#2563eb] px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-500/20 transition hover:bg-blue-700"
+            >
+              <UserRound className="h-4 w-4" aria-hidden="true" />
+              Login
             </NavLink>
-          ))}
+          )}
         </div>
-      </div>
 
-      {/* Mobile Menu */}
+        <button
+          type="button"
+          className="inline-flex rounded-xl border border-slate-200 p-2 text-[#0f1f44] lg:hidden"
+          onClick={() => setMobileMenuOpen((current) => !current)}
+          aria-label="Toggle menu"
+        >
+          {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+        </button>
+      </nav>
+
       {isMobileMenuOpen && (
-        <div>
-          <div
-            className="fixed inset-0 bg-black/50 z-40"
-            onClick={toggleMobileMenu}
-          ></div>
-          <div className="lg:hidden bg-gray-200 w-2/3 md:w-3/5 min-h-screen absolute right-0 z-50 px-4 py-4">
-            <ul className="w-full flex flex-col items-start px-4 py-4">
-              {navItems.map((navItem, index) => (
-                <li key={index} className="mb-4">
-                  <NavLink
-                    to={navItem.to}
-                    className={navLinkClass}
-                    onClick={toggleMobileMenu}
-                  >
-                    {navItem.label}
-                  </NavLink>
-                </li>
-              ))}
-              <li className="relative  mb-4">
+        <div className="mx-auto mt-3 max-w-7xl rounded-2xl border border-slate-200 bg-white p-4 shadow-xl lg:hidden">
+          <div className="grid gap-2">
+            {navItems.map((item) => (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                className={({ isActive }) =>
+                  `rounded-xl px-4 py-3 text-sm font-semibold ${isActive ? "bg-blue-50 text-[#2563eb]" : "text-[#0f1f44] hover:bg-slate-50"}`
+                }
+                onClick={closeMobileMenu}
+              >
+                {item.label}
+              </NavLink>
+            ))}
+            {isAuthenticated ? (
+              <>
                 <NavLink
-                  to={isAuthenticated ? "/profile" : "/login"}
-                  className="text-md font-semibold relative cursor-pointer rounded flex items-center border border-dark_theme text-dark_theme px-4 py-2 gap-2"
-                  onClick={toggleMobileMenu}
+                  to={profilePath}
+                  className="rounded-xl px-4 py-3 text-sm font-semibold text-[#0f1f44] hover:bg-slate-50"
+                  onClick={closeMobileMenu}
                 >
-                  <FaRegCircleUser className="text-dark_theme" />
-                  <span className="truncate">{isAuthenticated ? "Account" : "Login"}</span>
+                  My Profile
                 </NavLink>
-
-                {/* Dropdown Menus */}
-                {isAuthenticated && isDropdownOpen && (
-                  <div className="w-full bg-light_theme border border-dark_theme rounded shadow-lg z-50 mt-2">
-                    {dropdownMenus.map((menu, index) => (
-                      <NavLink
-                        key={index}
-                        to={menu.to}
-                        className="flex items-center px-4 py-3 gap-2 text-sm font-medium text-dark_theme hover:bg-main_theme/10"
-                        onClick={toggleMobileMenu}
-                      >
-                        {menu.icon && (
-                          <menu.icon className="text-dark_theme size-4" />
-                        )}{" "}
-                        {menu.label}
-                      </NavLink>
-                    ))}
-                  </div>
-                )}
-              </li>
-
-              {/* Social Icons (mobile) */}
-              <div className="flex gap-3 items-center justify-center">
-                {socialLinks.map((socialLink, index) => (
-                  <NavLink key={index} to={socialLink.to} target="_blank">
-                    <socialLink.icon className="text-dark_theme/90 size-5 hover:scale-110" />
-                  </NavLink>
-                ))}
-              </div>
-
-              {/* Cart (mobile) */}
-              <div className="hidden relative">
-                <div
-                  className="cursor-pointer"
-                  role="button"
-                  onClick={handleNavigation}
+                <button
+                  type="button"
+                  onClick={handleLogOut}
+                  className="rounded-xl bg-[#2563eb] px-4 py-3 text-left text-sm font-semibold text-white"
                 >
-                  <IoCartOutline className="text-dark_theme size-8 mr-1" />
-                  <div className="absolute bottom-4 left-4 border border-main_theme rounded-full cursor-pointer z-50 bg-main_theme/90 text-light_theme">
-                    <span className="px-2 py-2 text-xs font-medium">7</span>
-                  </div>
-                </div>
-              </div>
-            </ul>
+                  Logout
+                </button>
+              </>
+            ) : (
+              <NavLink
+                to="/login"
+                className="rounded-xl bg-[#2563eb] px-4 py-3 text-sm font-semibold text-white"
+                onClick={closeMobileMenu}
+              >
+                Login
+              </NavLink>
+            )}
           </div>
         </div>
       )}
-    </div>
+    </header>
   );
 }
 

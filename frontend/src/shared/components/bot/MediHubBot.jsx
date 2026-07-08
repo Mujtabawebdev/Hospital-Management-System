@@ -110,7 +110,7 @@ function MediHubBot() {
 
   return (
     <div
-      className={`flex flex-col fixed bottom-24 z-50 left-10 h-[70vh] w-[18.5rem] p-4 shadow-md shadow-emerald-200 z-40 bg-white rounded-t-lg rounded-r-lg`}
+      className={`flex flex-col fixed bottom-24 z-50 left-10 h-[70vh] w-[18.5rem] p-4 shadow-md shadow-blue-200 z-40 bg-white rounded-t-lg rounded-r-lg`}
     >
       <div className="flex justify-between items-center mb-4">
         <h1 className={`text-2xl font-bold text-dark_theme`}>Medihub Bot</h1>

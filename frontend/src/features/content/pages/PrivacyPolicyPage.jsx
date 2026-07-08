@@ -10,20 +10,20 @@ const sections = [
   },
   {
     title: "Cookies and Tracking",
-    titleClassName: "text-green-800",
-    cardClassName: "bg-green-100",
+    titleClassName: "text-blue-800",
+    cardClassName: "bg-blue-50",
     body: "Explain if your website uses cookies or other tracking technologies, and how they are used to enhance the user experience. Provide users with options to manage cookie preferences.",
   },
   {
     title: "Children's Privacy",
-    titleClassName: "text-yellow-800",
-    cardClassName: "bg-yellow-100",
+    titleClassName: "text-blue-800",
+    cardClassName: "bg-blue-100",
     body: "If your website collects information from children under the age of 13, comply with relevant laws such as the Children's Online Privacy Protection Act (COPPA).",
   },
   {
     title: "Contact Information",
-    titleClassName: "text-purple-800",
-    cardClassName: "bg-purple-100",
+    titleClassName: "text-blue-800",
+    cardClassName: "bg-blue-50",
     body: "Provide contact details for users to reach out with questions or concerns about the privacy policy or their personal data.",
   },
   {

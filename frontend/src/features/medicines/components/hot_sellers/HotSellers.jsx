@@ -15,7 +15,7 @@ export default function HotSellers() {
       {/* cards section */}
       <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6  justify-items-center gap-6 px-3 md:px-4 lg:px-6 py-2">
         {Category.map((category, index) => (
-          <Link key={index} to={`/shop-by-category${category.Url}`}>
+          <Link key={index} to={`/medicines/shop_by_category/${encodeURIComponent(category.name)}`}>
             <MedicineTile image={category.image} name={category.name} />
           </Link>
         ))}

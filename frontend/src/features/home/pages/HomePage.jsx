@@ -1,15 +1,24 @@
 import React from "react";
-import { Hero, Testimonials } from "../../../import-export/ImportExport";
+import AppointmentBooking from "../components/AppointmentBooking.jsx";
+import CoreServices from "../components/CoreServices.jsx";
+import ExpertDoctors from "../components/ExpertDoctors.jsx";
+import HeroSection from "../components/HeroSection.jsx";
+import HomeCTA from "../components/HomeCTA.jsx";
+import HomeStats from "../components/HomeStats.jsx";
+import WhyChooseUs from "../components/WhyChooseUs.jsx";
 
-function Home() {
+function HomePage() {
   return (
-    <>
-      <Hero />
-      {/* <TopSpecialities /> */}
-      <Testimonials />
-      {/* <Contributors /> */}
-    </>
+    <main className="bg-white">
+      <HeroSection />
+      <CoreServices />
+      <AppointmentBooking />
+      <HomeStats />
+      <ExpertDoctors />
+      <WhyChooseUs />
+      <HomeCTA />
+    </main>
   );
 }
 
-export default Home;
+export default HomePage;

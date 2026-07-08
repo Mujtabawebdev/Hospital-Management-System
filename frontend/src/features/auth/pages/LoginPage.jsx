@@ -71,10 +71,7 @@ function LoginPage() {
   };
 
   return (
-    <div
-      className="flex h-screen"
-      style={{ backgroundColor: "rgb(179, 218, 217)" }}
-    >
+    <div className="flex h-screen bg-blue-50">
       <div className="w-1/2 flex justify-center items-center">
         <Lottie options={defaultOptions} height={400} width={400} />
       </div>
@@ -132,22 +129,19 @@ function LoginPage() {
           <div className="flex justify-between text-sm md:text-lg">
             <Link
               to="/signup"
-              className="text-purple-600 hover:underline"
-              style={{ color: "rgb(27, 120, 120)" }}
+              className="text-blue-600 hover:underline"
             >
               Create Account
             </Link>
             <Link
               to="/doctor/signup"
-              className="text-purple-600 hover:underline"
-              style={{ color: "rgb(27, 120, 120)" }}
+              className="text-blue-600 hover:underline"
             >
               Register as Doctor
             </Link>
             <Link
               to="/"
-              className="text-purple-600 hover:underline"
-              style={{ color: "rgb(27, 120, 120)" }}
+              className="text-blue-600 hover:underline"
             >
               Forgot Password?
             </Link>

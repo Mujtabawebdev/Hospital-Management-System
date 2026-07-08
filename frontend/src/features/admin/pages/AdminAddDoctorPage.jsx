@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { Button, Card, Input, Select, Textarea } from "../../../shared/components/ui";
 import AdminSidebar from "../components/AdminSidebar.jsx";
 import { createAdminDoctor } from "../api/adminDoctorApi.js";
+import { fetchSpecialties } from "../../specialities/api";
+import { getSpecialityOptions } from "../../specialities/data/specialities";
 
 const initialForm = {
   firstName: "",
@@ -79,8 +81,25 @@ function AdminAddDoctorPage() {
   const [form, setForm] = useState(initialForm);
   const [submitting, setSubmitting] = useState(false);
   const [previewUrl, setPreviewUrl] = useState("");
+  const [specialityOptions, setSpecialityOptions] = useState(getSpecialityOptions());
 
-  React.useEffect(() => {
+  useEffect(() => {
+    let isMounted = true;
+
+    fetchSpecialties()
+      .then((items) => {
+        if (isMounted) setSpecialityOptions(getSpecialityOptions(items));
+      })
+      .catch(() => {
+        if (isMounted) setSpecialityOptions(getSpecialityOptions());
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  useEffect(() => {
     return () => {
       if (previewUrl?.startsWith("blob:")) {
         URL.revokeObjectURL(previewUrl);
@@ -165,7 +184,14 @@ function AdminAddDoctorPage() {
               <option value="Other">Other</option>
             </Select>
             <Input label="Qualification" name="qualification" value={form.qualification} onChange={handleChange} minLength={2} required />
-            <Input label="Specialization" name="specialization" value={form.specialization} onChange={handleChange} minLength={2} required />
+            <Select label="Specialization" name="specialization" value={form.specialization} onChange={handleChange} required>
+              <option value="">Select Specialization</option>
+              {specialityOptions.map((speciality) => (
+                <option key={speciality} value={speciality}>
+                  {speciality}
+                </option>
+              ))}
+            </Select>
             <Input label="Experience" type="number" min="0" max="70" name="experience" value={form.experience} onChange={handleChange} required />
             <Input label="Hospital" name="hospital" value={form.hospital} onChange={handleChange} minLength={2} required />
             <Input label="Clinic" name="clinic" value={form.clinic} onChange={handleChange} />

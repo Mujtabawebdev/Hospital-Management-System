@@ -11,7 +11,7 @@ import chatIcon from '/chat-bot.jpg'
 
   return (
     <div >
-     <div className=' w-12 h-12 rounded-full fixed bottom-10 left-0 shadow-md shadow-emerald-400 z-40 bg-white cursor-pointer m-2' onClick={handleChatClick}>
+     <div className=' w-12 h-12 rounded-full fixed bottom-10 left-0 shadow-md shadow-blue-300 z-40 bg-white cursor-pointer m-2' onClick={handleChatClick}>
             <img src={chatIcon} alt=""  className='w-full h-full rounded-full'/>
     </div>
     {chatbotOpen ? <MediHubBot/> : ""}

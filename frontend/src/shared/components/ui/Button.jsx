@@ -5,7 +5,7 @@ const variants = {
   primary: "bg-main_theme text-white hover:bg-dark_theme",
   secondary: "border border-dark_theme text-dark_theme hover:bg-light_theme",
   blue: "bg-blue-500 text-white hover:bg-blue-700",
-  green: "bg-green-500 text-white hover:bg-green-600",
+  green: "bg-blue-600 text-white hover:bg-blue-700",
   red: "bg-red-500 text-white hover:bg-red-600",
   ghost: "bg-transparent text-dark_theme hover:bg-light_theme",
 };

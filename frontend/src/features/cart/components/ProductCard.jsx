@@ -21,7 +21,7 @@ const ProductCard = ({ order }) => {
       <div className="text-right">
         <p
           className={`font-semibold ${
-            isDelivered ? "text-green-500" : "text-red-500"
+            isDelivered ? "text-blue-600" : "text-red-500"
           }`}
         >
           {status} on {date}

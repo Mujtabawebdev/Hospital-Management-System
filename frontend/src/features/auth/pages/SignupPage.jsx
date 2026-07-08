@@ -92,10 +92,7 @@ function SignupPage() {
   };
 
   return (
-    <div
-      className="flex h-screen"
-      style={{ backgroundColor: "rgb(179, 218, 217)" }}
-    >
+    <div className="flex h-screen bg-blue-50">
       <div className="w-1/2 flex justify-center items-center">
         <Lottie options={defaultOptions} height={400} width={400} />
       </div>
@@ -223,13 +220,15 @@ function SignupPage() {
                     height: "10px",
                     width: `${strength * 25}%`,
                     backgroundColor:
-                      strength === 1
-                        ? "red"
+                      strength === 0
+                        ? "#dbeafe"
+                        : strength === 1
+                        ? "#93c5fd"
                         : strength === 2
-                        ? "orange"
+                        ? "#60a5fa"
                         : strength === 3
-                        ? "yellow"
-                        : "green",
+                        ? "#3b82f6"
+                        : "#2563eb",
                   }}
                 ></div>
               </div>
@@ -249,16 +248,14 @@ function SignupPage() {
             </Button>
             <Link to="/login">
               <p
-                className="my-3 p-1 md:p-0 text-purple-600 hover:underline"
-                style={{ color: "rgb(27, 120, 120)" }}
+                className="my-3 p-1 text-blue-600 hover:underline md:p-0"
               >
                 Already have an account?
               </p>
             </Link>{" "}
             <Link to="/doctor/signup">
               <p
-                className="my-3 p-1 md:p-0 text-purple-600 hover:underline"
-                style={{ color: "rgb(27, 120, 120)" }}
+                className="my-3 p-1 text-blue-600 hover:underline md:p-0"
               >
                 Register as Doctor
               </p>
