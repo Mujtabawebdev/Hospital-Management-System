@@ -45,6 +45,7 @@ function Navbar() {
 
   // Nav items
   const navItems = [
+    { to: "/", label: "Home" },
     { to: "/alldoctors", label: "All Doctors" },
     { to: "/specialities", label: "Specialities" },
     { to: "/medicines", label: "Marketplace" },
@@ -63,9 +64,16 @@ function Navbar() {
     setMobileMenuOpen(!isMobileMenuOpen);
   };
 
+  const profilePath =
+    user?.role === "Admin"
+      ? "/admin/profile"
+      : user?.role === "Doctor"
+      ? "/doctor/profile"
+      : "/patient/profile";
+
   // Dropdown menus
   const dropdownMenus = [
-    { to: "/profile", label: "My Profile", icon: FaRegCircleUser },
+    { to: profilePath, label: "My Profile", icon: FaRegCircleUser },
     { to: "/appointments", label: "Appointments", icon: FaRegCalendarCheck },
     { to: "medicines/wishlist", label: "Wishlist", icon: FaRegHeart },
     { to: "/medicines/order_history", label: "Orders", icon: LuBox },
@@ -103,8 +111,8 @@ function Navbar() {
       <div className="max-w-7xl mx-auto flex items-center justify-between px-3 md:px-4 h-full">
         {/* logo */}
         <NavLink to="/">
-          <h1 className="text-3xl text-dark_theme tracking-wide font-bold">
-            MediHub
+          <h1 className="text-2xl sm:text-3xl text-dark_theme tracking-wide font-bold">
+            Medicare Hub
           </h1>
         </NavLink>
 

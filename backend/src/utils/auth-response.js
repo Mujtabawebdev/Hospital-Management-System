@@ -10,6 +10,11 @@ export const publicUser = (user) => ({
   lastName: user.lastName,
   name: user.name,
   email: user.email,
+  phone: user.phone,
+  address: user.address,
+  dob: user.dob,
+  gender: user.gender,
+  profilePicture: user.profilePicture,
   role: user.role,
   status: user.status,
 });
@@ -20,7 +25,7 @@ export const sendAuthResponse = (res, user, message, statusCode = 200) => {
   return res
     .status(statusCode)
     .cookie(cookieNameForRole(user.role), token, {
-      expires: new Date(Date.now() + env.cookieExpireDays * 24 * 60 * 60 * 1000),
+      expires: new Date(Date.now() + env.cookieExpireMs),
       httpOnly: true,
       secure: env.nodeEnv === "production",
       sameSite: env.nodeEnv === "production" ? "none" : "lax",

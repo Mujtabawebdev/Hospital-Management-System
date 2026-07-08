@@ -49,11 +49,32 @@ function DoctorSignupPage() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState(initialForm);
   const [submitting, setSubmitting] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState("");
+
+  React.useEffect(() => {
+    return () => {
+      if (previewUrl?.startsWith("blob:")) {
+        URL.revokeObjectURL(previewUrl);
+      }
+    };
+  }, [previewUrl]);
 
   const handleInputChange = (event) => {
     const { name, value, files, type } = event.target;
 
     if (type === "file") {
+      if (name === "profilePicture") {
+        const selectedFile = files?.[0] || null;
+
+        setPreviewUrl((current) => {
+          if (current?.startsWith("blob:")) {
+            URL.revokeObjectURL(current);
+          }
+
+          return selectedFile ? URL.createObjectURL(selectedFile) : "";
+        });
+      }
+
       setFormData((current) => ({
         ...current,
         [name]: name === "documents" ? Array.from(files || []) : files?.[0] || null,
@@ -193,7 +214,15 @@ function DoctorSignupPage() {
             placeholder="10:00 AM, 11:30 AM"
             required
           />
-          <Input label="Profile Picture" type="file" name="profilePicture" onChange={handleInputChange} accept="image/*" />
+          <div className="md:col-span-2">
+            <Input label="Profile Picture" type="file" name="profilePicture" onChange={handleInputChange} accept="image/*" />
+            {previewUrl && (
+              <div className="mt-3 flex items-center gap-3 rounded-md border border-slate-200 bg-slate-50 p-3">
+                <img src={previewUrl} alt="Profile preview" className="h-16 w-16 rounded-full object-cover" />
+                <p className="text-sm font-semibold text-slate-600">Preview of selected image</p>
+              </div>
+            )}
+          </div>
           <Input label="Documents" type="file" name="documents" onChange={handleInputChange} multiple />
 
           <Textarea

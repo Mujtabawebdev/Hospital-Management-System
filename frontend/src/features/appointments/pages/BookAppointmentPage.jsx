@@ -13,6 +13,7 @@ function BookAppointmentPage() {
   const [slots, setSlots] = useState([]);
   const [form, setForm] = useState({
     scheduleId: "",
+    appointmentDate: "",
     city: "",
     pincode: "",
     department: "General",
@@ -26,6 +27,8 @@ function BookAppointmentPage() {
   }, [doctorId]);
 
   const selectedSlot = slots.find((slot) => slot._id === form.scheduleId);
+  const canBook = Boolean(form.scheduleId || form.appointmentDate);
+  const today = new Date().toISOString().split("T")[0];
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -38,7 +41,8 @@ function BookAppointmentPage() {
       await bookDoctorAppointment({
         ...form,
         doctorId,
-        appointmentDate: selectedSlot?.date || new Date(),
+        scheduleId: form.scheduleId || undefined,
+        appointmentDate: selectedSlot?.date || form.appointmentDate,
       });
       toast.success("Appointment booked");
       navigate("/appointments");
@@ -71,14 +75,29 @@ function BookAppointmentPage() {
                 </button>
               ))}
             </div>
+            {slots.length === 0 && (
+              <p className="mt-2 text-sm text-slate-500">
+                No available slot found. Choose a preferred appointment date below.
+              </p>
+            )}
           </div>
           <div className="grid gap-4 md:grid-cols-2">
+            <Input
+              label="Appointment Date"
+              type="date"
+              name="appointmentDate"
+              value={form.appointmentDate}
+              onChange={handleChange}
+              min={today}
+              required={!form.scheduleId}
+              disabled={Boolean(form.scheduleId)}
+            />
             <Input label="City" name="city" value={form.city} onChange={handleChange} required />
             <Input label="Pincode" name="pincode" value={form.pincode} onChange={handleChange} required />
             <Input label="Department" name="department" value={form.department} onChange={handleChange} required />
           </div>
           <Textarea label="Issue" name="issue" value={form.issue} onChange={handleChange} rows={4} />
-          <Button type="submit" disabled={!form.scheduleId}>Book Appointment</Button>
+          <Button type="submit" disabled={!canBook}>Book Appointment</Button>
         </form>
       </Card>
     </section>

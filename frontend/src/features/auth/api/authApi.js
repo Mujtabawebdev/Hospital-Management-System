@@ -14,6 +14,16 @@ export const getCurrentUser = async (role) => {
   return response.data?.data;
 };
 
+export const updateCurrentUser = async (role, payload) => {
+  const path = rolePath[role];
+  if (!path) {
+    throw new Error("Please login again before updating your profile");
+  }
+
+  const response = await api.patch(`/user/${path}/me`, payload);
+  return response.data?.data;
+};
+
 export const logoutCurrentUser = async (role) => {
   const path = rolePath[role];
   if (!path) return null;

@@ -3,6 +3,7 @@ import AdminAppointmentsPage from "../pages/AdminAppointmentsPage.jsx";
 import AdminDashboardPage from "../pages/AdminDashboardPage.jsx";
 import AdminMessagesPage from "../pages/AdminMessagesPage.jsx";
 import AdminMedicinesPage from "../pages/AdminMedicinesPage.jsx";
+import AdminProfilePage from "../pages/AdminProfilePage.jsx";
 import AdminSettingsPage from "../pages/AdminSettingsPage.jsx";
 
 export const adminRoutes = [
@@ -25,6 +26,10 @@ export const adminRoutes = [
   {
     path: "/admin/messages",
     element: <AdminMessagesPage />,
+  },
+  {
+    path: "/admin/profile",
+    element: <AdminProfilePage />,
   },
   {
     path: "/admin/settings",

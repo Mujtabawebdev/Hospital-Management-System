@@ -3,6 +3,7 @@ import DoctorAppointmentsPage from "../pages/DoctorAppointmentsPage.jsx";
 import DoctorAvailabilityPage from "../pages/DoctorAvailabilityPage.jsx";
 import DoctorDashboardPage from "../pages/DoctorDashboardPage.jsx";
 import DoctorDashboardLayout from "../components/DoctorDashboardLayout.jsx";
+import ProfilePage from "../../auth/pages/ProfilePage.jsx";
 
 export const doctorsRoutes = [
   {
@@ -24,6 +25,10 @@ export const doctorsRoutes = [
       {
         path: "availability",
         element: <DoctorAvailabilityPage />,
+      },
+      {
+        path: "profile",
+        element: <ProfilePage />,
       },
     ],
   },

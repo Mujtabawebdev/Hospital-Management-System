@@ -13,8 +13,8 @@ export const env = {
   mongoUri: process.env.MONGODB_URI || "",
   databaseName: process.env.DB_NAME || "mediHub",
   jwtSecret: process.env.JWT_SECRET_KEY || "",
-  jwtExpiresIn: process.env.JWT_EXPIRES || "7d",
-  cookieExpireDays: toNumber(process.env.COOKIE_EXPIRE, 7),
+  jwtExpiresIn: process.env.JWT_EXPIRES || "10h",
+  cookieExpireMs: toNumber(process.env.COOKIE_EXPIRE, 10 * 60 * 60 * 1000),
   frontendUrl: process.env.FRONTEND_URL || "http://localhost:5173",
   cloudinary: {
     cloudName: process.env.CLOUDINARY_CLOUD_NAME,

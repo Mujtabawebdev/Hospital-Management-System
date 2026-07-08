@@ -1,18 +1,24 @@
 import React from "react";
 import { NavLink, Outlet } from "react-router-dom";
-import { CalendarDays, LayoutDashboard, Users } from "lucide-react";
+import { CalendarDays, LayoutDashboard, UserCircle, Users } from "lucide-react";
 
 const links = [
   { to: "/doctor/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { to: "/doctor/appointments", label: "Appointments", icon: Users },
   { to: "/doctor/availability", label: "Availability", icon: CalendarDays },
+  { to: "/doctor/profile", label: "Profile", icon: UserCircle },
 ];
 
 function DoctorDashboardLayout() {
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 md:flex">
       <aside className="border-r border-slate-200 bg-white p-4 md:min-h-screen md:w-64">
-        <h2 className="mb-6 text-xl font-black text-main_theme">Doctor Panel</h2>
+        <div className="mb-6">
+          <NavLink to="/" className="block text-xl font-black text-main_theme hover:text-dark_theme">
+            Medicare Hub
+          </NavLink>
+          <p className="mt-1 text-sm font-semibold text-slate-500">Doctor Panel</p>
+        </div>
         <nav className="flex gap-2 md:flex-col">
           {links.map(({ to, label, icon: Icon }) => (
             <NavLink

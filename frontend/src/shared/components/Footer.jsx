@@ -33,11 +33,11 @@ function Footer() {
           {/* Title */}
           <div className="cols-span-1 md:col-span-4 text-left">
             <h1 className="text-lg lg:text-xl font-bold text-black/80 mb-6">
-              MediHub
+              Medicare Hub
             </h1>
             {/* desc */}
             <p className="text-md lg:text-lg  text-black/70 font-medium">
-              MediHub is a web-based platform facilitating seamless management
+              Medicare Hub is a web-based platform facilitating seamless management
               of healthcare services, including appointments, patient records,
               and doctor interactions.
             </p>

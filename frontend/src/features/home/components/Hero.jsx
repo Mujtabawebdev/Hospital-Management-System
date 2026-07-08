@@ -20,7 +20,7 @@ function Hero() {
 
             {/* para */}
             <p className="text-text_grey md:max-w-md">
-              MediHub is a platform where you can meet all doctors and buy
+              Medicare Hub is a platform where you can meet all doctors and buy
               essentials in one place.
             </p>
           </div>

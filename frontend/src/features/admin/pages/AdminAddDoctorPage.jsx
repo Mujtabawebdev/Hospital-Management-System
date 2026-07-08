@@ -78,11 +78,32 @@ const appendDoctorForm = (form) => {
 function AdminAddDoctorPage() {
   const [form, setForm] = useState(initialForm);
   const [submitting, setSubmitting] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState("");
+
+  React.useEffect(() => {
+    return () => {
+      if (previewUrl?.startsWith("blob:")) {
+        URL.revokeObjectURL(previewUrl);
+      }
+    };
+  }, [previewUrl]);
 
   const handleChange = (event) => {
     const { name, value, files, type } = event.target;
 
     if (type === "file") {
+      if (name === "profilePicture") {
+        const selectedFile = files?.[0] || null;
+
+        setPreviewUrl((current) => {
+          if (current?.startsWith("blob:")) {
+            URL.revokeObjectURL(current);
+          }
+
+          return selectedFile ? URL.createObjectURL(selectedFile) : "";
+        });
+      }
+
       setForm((current) => ({
         ...current,
         [name]: name === "documents" ? Array.from(files || []) : files?.[0] || null,
@@ -111,6 +132,7 @@ function AdminAddDoctorPage() {
       await createAdminDoctor(appendDoctorForm(form));
       toast.success("Doctor created and approved");
       setForm(initialForm);
+      setPreviewUrl("");
       event.target.reset();
     } catch (error) {
       const validationMessage = error.response?.data?.errors?.[0]?.message;
@@ -163,7 +185,15 @@ function AdminAddDoctorPage() {
               <option value="Sunday">Sunday</option>
             </Select>
             <Input label="Available Slots" name="availableSlots" value={form.availableSlots} onChange={handleChange} placeholder="10:00 AM, 11:30 AM" required />
-            <Input label="Profile Picture" type="file" name="profilePicture" onChange={handleChange} accept="image/*" />
+            <div className="md:col-span-2 xl:col-span-4">
+              <Input label="Profile Picture" type="file" name="profilePicture" onChange={handleChange} accept="image/*" />
+              {previewUrl && (
+                <div className="mt-3 flex items-center gap-3 rounded-md border border-slate-200 bg-slate-50 p-3">
+                  <img src={previewUrl} alt="Profile preview" className="h-16 w-16 rounded-full object-cover" />
+                  <p className="text-sm font-semibold text-slate-600">Preview of selected image</p>
+                </div>
+              )}
+            </div>
             <Input label="Documents" type="file" name="documents" onChange={handleChange} multiple />
             <Textarea label="Biography" name="biography" value={form.biography} onChange={handleChange} rows={4} className="md:col-span-2 xl:col-span-4" minLength={20} required />
             <div className="md:col-span-2 xl:col-span-4">

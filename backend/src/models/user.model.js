@@ -64,6 +64,10 @@ const userSchema = new mongoose.Schema(
             type: String,
             enum: ["Male", "Female", "Other"],
         },
+        profilePicture: {
+            url: String,
+            publicId: String,
+        },
         role: {
             type: String,
             required: true,
