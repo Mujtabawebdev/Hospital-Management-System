@@ -4,6 +4,7 @@ import DoctorAvailabilityPage from "../pages/DoctorAvailabilityPage.jsx";
 import DoctorDashboardPage from "../pages/DoctorDashboardPage.jsx";
 import DoctorDashboardLayout from "../components/DoctorDashboardLayout.jsx";
 import ProfilePage from "../../auth/pages/ProfilePage.jsx";
+import ProtectedRoute from "../../../shared/components/ProtectedRoute.jsx";
 
 export const doctorsRoutes = [
   {
@@ -12,7 +13,7 @@ export const doctorsRoutes = [
   },
   {
     path: "/doctor",
-    element: <DoctorDashboardLayout />,
+    element: <ProtectedRoute roles={["Doctor"]}><DoctorDashboardLayout /></ProtectedRoute>,
     children: [
       {
         path: "dashboard",

@@ -3,6 +3,9 @@ import BookAppointmentPage from "../pages/BookAppointmentPage.jsx";
 import MyAppointmentsPage from "../pages/MyAppointmentsPage.jsx";
 import PatientDoctorsPage from "../pages/PatientDoctorsPage.jsx";
 import PatientProfilePage from "../pages/PatientProfilePage.jsx";
+import ProtectedRoute from "../../../shared/components/ProtectedRoute.jsx";
+
+const patientOnly = (page) => <ProtectedRoute roles={["Patient"]}>{page}</ProtectedRoute>;
 
 export const appointmentsRoutes = [
   {
@@ -11,26 +14,26 @@ export const appointmentsRoutes = [
   },
   {
     path: "/appointment/book/:doctorId",
-    element: <BookAppointmentPage />,
+    element: patientOnly(<BookAppointmentPage />),
   },
   {
     path: "/appointments",
-    element: <MyAppointmentsPage />,
+    element: patientOnly(<MyAppointmentsPage />),
   },
   {
     path: "/patient/dashboard",
-    element: <MyAppointmentsPage />,
+    element: patientOnly(<MyAppointmentsPage />),
   },
   {
     path: "/patient/appointments",
-    element: <MyAppointmentsPage />,
+    element: patientOnly(<MyAppointmentsPage />),
   },
   {
     path: "/patient/doctors",
-    element: <PatientDoctorsPage />,
+    element: patientOnly(<PatientDoctorsPage />),
   },
   {
     path: "/patient/profile",
-    element: <PatientProfilePage />,
+    element: patientOnly(<PatientProfilePage />),
   },
 ];

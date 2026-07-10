@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Lottie from "react-lottie";
@@ -10,6 +10,7 @@ import { Context } from "../../../shared/context/AppContext.jsx";
 
 function LoginPage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { setIsAuthenticated, setUser } = useContext(Context);
 
   const [formData, setFormData] = useState({
@@ -36,9 +37,9 @@ function LoginPage() {
         role,
       });
       const authData = response.data?.data;
-      if (authData?.token) {
-        localStorage.setItem("token", authData.token);
-        localStorage.setItem("user", JSON.stringify(authData.user));
+      if (authData?.user) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
         setIsAuthenticated(true);
         setUser(authData.user);
         toast.success("Login successful");
@@ -50,7 +51,7 @@ function LoginPage() {
           navigate("/doctor/dashboard");
           return;
         }
-        navigate("/");
+        navigate(location.state?.from?.pathname || "/", { replace: true });
       } else {
         toast.error("Login failed");
       }

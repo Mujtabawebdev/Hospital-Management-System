@@ -106,7 +106,7 @@ function Navbar() {
               className="inline-flex items-center gap-2 rounded-xl bg-[#2563eb] px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-500/20 transition hover:bg-blue-700"
             >
               <UserRound className="h-4 w-4" aria-hidden="true" />
-              Login
+              Login / Signup
             </NavLink>
           )}
         </div>
@@ -159,7 +159,7 @@ function Navbar() {
                 className="rounded-xl bg-[#2563eb] px-4 py-3 text-sm font-semibold text-white"
                 onClick={closeMobileMenu}
               >
-                Login
+                Login / Signup
               </NavLink>
             )}
           </div>
