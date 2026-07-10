@@ -34,7 +34,6 @@ export const sendAuthResponse = (res, user, message, statusCode = 200) => {
       new ApiResponse(
         statusCode,
         {
-          token,
           user: publicUser(user),
         },
         message,

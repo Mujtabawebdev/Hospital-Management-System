@@ -1,12 +1,14 @@
 import express from "express";
 import { getUserDetails, getDoctorDetails, updateDoctorProfile, updateUserProfile } from "../controllers/user.controller.js";
 import { getAdminDoctors, getAllDoctors, updateDoctorStatus } from "../controllers/doctor.controller.js";
-import { isAdminAuthenticated, isPatientAuthenticated, isDoctorAuthenticated } from "../middleware/auth.middleware.js"
+import { authenticate, isAdminAuthenticated, isPatientAuthenticated, isDoctorAuthenticated } from "../middleware/auth.middleware.js"
+import { USER_ROLES } from "../constants/roles.js";
 import { upload } from "../middleware/multer.middleware.js";
 
 
 const router = express.Router();
 
+router.get("/session", authenticate(USER_ROLES.ADMIN, USER_ROLES.DOCTOR, USER_ROLES.PATIENT), getUserDetails);
 router.get("/admin/doctors", isAdminAuthenticated, getAdminDoctors);
 router.patch("/doctor/:doctorId/status", isAdminAuthenticated, updateDoctorStatus);
 router.get("/alldoctors", getAllDoctors);
