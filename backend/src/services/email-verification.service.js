@@ -1,6 +1,5 @@
 import crypto from "crypto";
 import nodemailer from "nodemailer";
-import { ApiError } from "../utils/ApiError.js";
 
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
@@ -17,8 +16,9 @@ export const issueEmailOtp = async (account) => {
   await account.save({ validateBeforeSave: false });
   try {
     await transporter.sendMail({ from: process.env.SMTP_FROM || process.env.SMTP_USER, to: account.email, subject: "Verify your MediHub email", text: `Your MediHub verification code is ${otp}. It expires in 10 minutes.` });
+    return true;
   } catch {
-    throw new ApiError(503, "Account created, but verification email failed. Please use resend OTP.");
+    return false;
   }
 };
 

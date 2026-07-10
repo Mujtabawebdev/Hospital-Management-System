@@ -68,6 +68,7 @@ export const resendEmailOtp = asyncHandler(async (req, res) => {
   const account = await findPrincipalByRole(email, role);
   if (!account) throw new ApiError(404, "Account not found");
   if (account.emailVerified) throw new ApiError(400, "Email is already verified");
-  await issueEmailOtp(account);
+  const emailSent = await issueEmailOtp(account);
+  if (!emailSent) throw new ApiError(503, "Verification email could not be sent. Check the SMTP configuration and try again.");
   res.status(200).json(new ApiResponse(200, null, "A new verification code was sent"));
 });

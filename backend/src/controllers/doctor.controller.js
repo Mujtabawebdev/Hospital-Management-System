@@ -87,6 +87,10 @@ export const registerDoctor = asyncHandler(async (req, res) => {
   const existedDoctor = await Doctor.findOne({ email: payload.email });
 
   if (existedDoctor) {
+    if (existedDoctor.emailVerified === false) {
+      const emailSent = await issueEmailOtp(existedDoctor);
+      return res.status(200).json(new ApiResponse(200, { email: existedDoctor.email, role: existedDoctor.role, emailSent }, emailSent ? "A new verification code was sent" : "Continue to verification and use Resend OTP"));
+    }
     throw new ApiError(409, "A doctor account with this email already exists");
   }
 
@@ -99,8 +103,8 @@ export const registerDoctor = asyncHandler(async (req, res) => {
     }),
   ));
 
-  await issueEmailOtp(doctor);
-  res.status(201).json(new ApiResponse(201, { email: doctor.email, role: doctor.role }, "Verification code sent to your email"));
+  const emailSent = await issueEmailOtp(doctor);
+  res.status(201).json(new ApiResponse(201, { email: doctor.email, role: doctor.role, emailSent }, emailSent ? "Verification code sent to your email" : "Account created. Continue to verification and use Resend OTP"));
 });
 
 export const addNewDoctor = asyncHandler(async (req, res) => {
