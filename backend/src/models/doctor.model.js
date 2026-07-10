@@ -65,6 +65,10 @@ const doctorSchema = new mongoose.Schema({
     emailVerified: { type: Boolean, default: false },
     emailVerificationOtp: { type: String, select: false },
     emailVerificationExpires: { type: Date, select: false },
+    passwordResetOtp: { type: String, select: false },
+    passwordResetOtpExpires: { type: Date, select: false },
+    passwordResetToken: { type: String, select: false },
+    passwordResetTokenExpires: { type: Date, select: false },
     department: {
         name: {
             type: String,

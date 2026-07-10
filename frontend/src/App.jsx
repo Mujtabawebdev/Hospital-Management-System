@@ -14,13 +14,22 @@ const renderRoute = (route) => (
 
 function AppShell() {
   const location = useLocation();
-  const hidePublicNavbar = [
+  const routesWithoutNavbar = [
     "/admin",
     "/doctor",
     "/patient",
     "/appointments",
-    "/login", "/signup", "/doctor/signup", "/otp", "/forgot-password", "/reset-password",
-  ].some((path) => location.pathname.startsWith(path));
+    "/login",
+    "/signup",
+    "/verify-email",
+    "/otp",
+    "/forgot-password",
+    "/reset-password",
+    "/profile",
+  ];
+  const hidePublicNavbar = routesWithoutNavbar.some(
+    (path) => location.pathname === path || location.pathname.startsWith(`${path}/`),
+  );
 
   return (
     <AppContext>

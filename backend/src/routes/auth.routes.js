@@ -1,6 +1,6 @@
 import express from "express";
 import { addNewAdmin } from "../controllers/admin.controller.js";
-import { login, logoutAdmin, logoutDoctor, logoutPatient, verifyEmail, resendEmailOtp } from "../controllers/auth.controller.js";
+import { login, logoutAdmin, logoutDoctor, logoutPatient, verifyEmail, resendEmailOtp, forgotPassword, verifyPasswordResetOtp, resetPassword } from "../controllers/auth.controller.js";
 import { addNewDoctor, registerDoctor } from "../controllers/doctor.controller.js";
 import { patientRegister } from "../controllers/user.controller.js";
 import {
@@ -31,6 +31,9 @@ router.post(
 router.post("/login", validate(loginSchema), login);
 router.post("/verify-email", verifyEmail);
 router.post("/resend-otp", resendEmailOtp);
+router.post("/forgot-password", forgotPassword);
+router.post("/forgot-password/verify", verifyPasswordResetOtp);
+router.post("/reset-password", resetPassword);
 router.post("/admin/addnew", isAdminAuthenticated, validate(patientRegisterSchema), addNewAdmin);
 router.post(
   "/doctor/addnew",

@@ -141,7 +141,7 @@ function LoginPage() {
               Register as Doctor
             </Link>
             <Link
-              to="/"
+              to="/forgot-password"
               className="rounded-xl border border-blue-200 px-3 py-2 text-center font-bold text-blue-600 hover:bg-blue-50"
             >
               Forgot Password?

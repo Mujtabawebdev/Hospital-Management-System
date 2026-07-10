@@ -23,3 +23,21 @@ export const issueEmailOtp = async (account) => {
 };
 
 export const otpMatches = (account, otp) => Boolean(account.emailVerificationExpires > new Date() && account.emailVerificationOtp === hashOtp(otp));
+
+export const issuePasswordResetOtp = async (account) => {
+  const otp = String(crypto.randomInt(100000, 1000000));
+  account.passwordResetOtp = hashOtp(otp);
+  account.passwordResetOtpExpires = new Date(Date.now() + 10 * 60 * 1000);
+  account.passwordResetToken = undefined;
+  account.passwordResetTokenExpires = undefined;
+  await account.save({ validateBeforeSave: false });
+  try {
+    await transporter.sendMail({ from: process.env.SMTP_FROM || process.env.SMTP_USER, to: account.email, subject: "Reset your MediHub password", text: `Your MediHub password reset code is ${otp}. It expires in 10 minutes.` });
+    return true;
+  } catch {
+    return false;
+  }
+};
+
+export const passwordResetOtpMatches = (account, otp) => Boolean(account.passwordResetOtpExpires > new Date() && account.passwordResetOtp === hashOtp(otp));
+export const hashResetToken = hashOtp;
