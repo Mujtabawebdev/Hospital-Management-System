@@ -16,6 +16,7 @@ export const addNewAdmin = asyncHandler(async (req, res) => {
   const createdAdmin = await User.create({
     ...payload,
     role: USER_ROLES.ADMIN,
+    emailVerified: true,
   });
 
   res.status(201).json(new ApiResponse(201, publicUser(createdAdmin), "Admin created successfully"));

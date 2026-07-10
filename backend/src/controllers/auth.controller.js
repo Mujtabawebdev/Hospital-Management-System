@@ -28,7 +28,9 @@ export const login = asyncHandler(async (req, res) => {
     throw new ApiError(401, "Invalid email or password");
   }
 
-  if (user.emailVerified === false) throw new ApiError(403, "Please verify your email before logging in");
+  if (role !== USER_ROLES.ADMIN && user.emailVerified === false) {
+    throw new ApiError(403, "Please verify your email before logging in");
+  }
 
   return sendAuthResponse(res, user, "Logged in successfully");
 });
@@ -48,6 +50,7 @@ export const logoutDoctor = logout(USER_ROLES.DOCTOR);
 
 export const verifyEmail = asyncHandler(async (req, res) => {
   const { email, role, otp } = req.body;
+  if (role === USER_ROLES.ADMIN) throw new ApiError(403, "Admin accounts do not use public email verification");
   const Model = role === USER_ROLES.DOCTOR ? Doctor : User;
   const account = await Model.findOne(role === USER_ROLES.DOCTOR ? { email } : { email, role })
     .select("+password +emailVerificationOtp +emailVerificationExpires");
@@ -61,6 +64,7 @@ export const verifyEmail = asyncHandler(async (req, res) => {
 
 export const resendEmailOtp = asyncHandler(async (req, res) => {
   const { email, role } = req.body;
+  if (role === USER_ROLES.ADMIN) throw new ApiError(403, "Admin accounts do not use public email verification");
   const account = await findPrincipalByRole(email, role);
   if (!account) throw new ApiError(404, "Account not found");
   if (account.emailVerified) throw new ApiError(400, "Email is already verified");

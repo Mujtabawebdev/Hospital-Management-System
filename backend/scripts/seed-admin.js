@@ -28,6 +28,7 @@ try {
       existingAdmin.lastName = process.env.ADMIN_LAST_NAME;
       existingAdmin.phone = process.env.ADMIN_PHONE;
       existingAdmin.password = process.env.ADMIN_PASSWORD;
+      existingAdmin.emailVerified = true;
       await existingAdmin.save();
 
       console.log(`Admin updated: ${email}`);
@@ -40,6 +41,7 @@ try {
       phone: process.env.ADMIN_PHONE,
       password: process.env.ADMIN_PASSWORD,
       role: USER_ROLES.ADMIN,
+      emailVerified: true,
     });
 
     console.log(`Admin created: ${email}`);
