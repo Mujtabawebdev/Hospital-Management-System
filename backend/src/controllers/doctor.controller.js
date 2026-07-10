@@ -125,6 +125,19 @@ export const addNewDoctor = asyncHandler(async (req, res) => {
   res.status(201).json(new ApiResponse(201, doctor, "Doctor created and approved"));
 });
 
+export const resubmitDoctorApplication = asyncHandler(async (req, res) => {
+  if (req.doctor.status !== DOCTOR_STATUS.REJECTED) {
+    throw new ApiError(400, "Only a rejected application can be submitted again");
+  }
+
+  req.doctor.status = DOCTOR_STATUS.PENDING;
+  await req.doctor.save({ validateBeforeSave: false });
+
+  res.status(200).json(
+    new ApiResponse(200, req.doctor, "Doctor application submitted again"),
+  );
+});
+
 export const getAllDoctors = asyncHandler(async (req, res) => {
   const {
     specialization,
