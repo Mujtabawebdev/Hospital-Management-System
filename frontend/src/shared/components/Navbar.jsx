@@ -9,7 +9,6 @@ const navItems = [
   { to: "/specialities", label: "Services" },
   { to: "/alldoctors", label: "Doctors" },
   { to: "/medicines", label: "Marketplace" },
-  { to: "/medicines", label: "Medicines" },
   { to: "/about", label: "About" },
   { to: "/contact", label: "Contact" },
 ];

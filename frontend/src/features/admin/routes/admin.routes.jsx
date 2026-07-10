@@ -5,34 +5,35 @@ import AdminMessagesPage from "../pages/AdminMessagesPage.jsx";
 import AdminMedicinesPage from "../pages/AdminMedicinesPage.jsx";
 import AdminProfilePage from "../pages/AdminProfilePage.jsx";
 import AdminSettingsPage from "../pages/AdminSettingsPage.jsx";
+import AdminRoute from "../components/AdminRoute.jsx";
 
 export const adminRoutes = [
   {
     path: "/admin",
-    element: <AdminDashboardPage />,
+    element: <AdminRoute><AdminDashboardPage /></AdminRoute>,
   },
   {
     path: "/admin/medicines",
-    element: <AdminMedicinesPage />,
+    element: <AdminRoute><AdminMedicinesPage /></AdminRoute>,
   },
   {
     path: "/admin/doctors/new",
-    element: <AdminAddDoctorPage />,
+    element: <AdminRoute><AdminAddDoctorPage /></AdminRoute>,
   },
   {
     path: "/admin/appointments",
-    element: <AdminAppointmentsPage />,
+    element: <AdminRoute><AdminAppointmentsPage /></AdminRoute>,
   },
   {
     path: "/admin/messages",
-    element: <AdminMessagesPage />,
+    element: <AdminRoute><AdminMessagesPage /></AdminRoute>,
   },
   {
     path: "/admin/profile",
-    element: <AdminProfilePage />,
+    element: <AdminRoute><AdminProfilePage /></AdminRoute>,
   },
   {
     path: "/admin/settings",
-    element: <AdminSettingsPage />,
+    element: <AdminRoute><AdminSettingsPage /></AdminRoute>,
   },
 ];

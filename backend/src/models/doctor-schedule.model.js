@@ -16,11 +16,8 @@ const doctorScheduleSchema = new mongoose.Schema(
       required: true,
       index: true,
     },
-    date: {
-      type: Date,
-      required: true,
-      index: true,
-    },
+    day: { type: String, required: true, enum: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"], index: true },
+    date: { type: Date, index: true },
     startTime: {
       type: String,
       required: true,
@@ -54,7 +51,7 @@ const doctorScheduleSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
-doctorScheduleSchema.index({ doctor: 1, date: 1, startTime: 1 }, { unique: true });
+doctorScheduleSchema.index({ doctor: 1, day: 1, startTime: 1 }, { unique: true });
 doctorScheduleSchema.index({ doctor: 1, date: 1, status: 1 });
 
 export const DoctorSchedule = mongoose.model("DoctorSchedule", doctorScheduleSchema);

@@ -4,24 +4,19 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import { DoctorSchedule, SCHEDULE_STATUS } from "../models/doctor-schedule.model.js";
 
 export const createDoctorSchedule = asyncHandler(async (req, res) => {
-  const { date, startTime, endTime } = req.body;
+  const { day, startTime, endTime } = req.body;
 
-  if (!date || !startTime || !endTime) {
-    throw new ApiError(400, "Date, start time, and end time are required");
+  if (!day || !startTime || !endTime) {
+    throw new ApiError(400, "Day, start time, and end time are required");
   }
 
   if (startTime >= endTime) {
     throw new ApiError(400, "Start time must be earlier than end time");
   }
 
-  const scheduleDate = new Date(date);
-  if (Number.isNaN(scheduleDate.getTime())) {
-    throw new ApiError(400, "Invalid schedule date");
-  }
-
   const schedule = await DoctorSchedule.create({
     doctor: req.doctor._id,
-    date: scheduleDate,
+    day,
     startTime,
     endTime,
     status: SCHEDULE_STATUS.AVAILABLE,
@@ -32,7 +27,7 @@ export const createDoctorSchedule = asyncHandler(async (req, res) => {
 
 export const getMyDoctorSchedule = asyncHandler(async (req, res) => {
   const schedules = await DoctorSchedule.find({ doctor: req.doctor._id })
-    .sort({ date: 1, startTime: 1 })
+    .sort({ day: 1, startTime: 1 })
     .populate("appointment");
 
   res.status(200).json(new ApiResponse(200, schedules, "Doctor schedules fetched successfully"));
@@ -42,8 +37,13 @@ export const getDoctorSchedulesByDoctorId = asyncHandler(async (req, res) => {
   const schedules = await DoctorSchedule.find({
     doctor: req.params.doctorId,
     status: SCHEDULE_STATUS.AVAILABLE,
-    date: { $gte: new Date(new Date().setHours(0, 0, 0, 0)) },
-  }).sort({ date: 1, startTime: 1 });
+  }).sort({ day: 1, startTime: 1 });
 
   res.status(200).json(new ApiResponse(200, schedules, "Available doctor schedules fetched successfully"));
+});
+
+export const deleteDoctorSchedule = asyncHandler(async (req, res) => {
+  const schedule = await DoctorSchedule.findOneAndDelete({ _id: req.params.scheduleId, doctor: req.doctor._id, status: SCHEDULE_STATUS.AVAILABLE });
+  if (!schedule) throw new ApiError(404, "Available schedule slot not found");
+  res.status(200).json(new ApiResponse(200, schedule, "Schedule slot deleted"));
 });

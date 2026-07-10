@@ -92,6 +92,7 @@ function DoctorAppointmentsPage() {
                       {appointment.startTime && `${appointment.startTime} - ${appointment.endTime}`}
                     </p>
                     <p className="mt-2 max-w-2xl text-sm font-semibold text-slate-700">{appointment.issue || "General consultation"}</p>
+                    <p className="mt-1 text-sm font-semibold text-slate-600">Phone: {appointment.patient?.phone || "Not provided"}</p>
                   </div>
                 </div>
                 <div className="flex flex-wrap items-center gap-3">

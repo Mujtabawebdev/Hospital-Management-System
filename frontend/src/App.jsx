@@ -19,6 +19,7 @@ function AppShell() {
     "/doctor",
     "/patient",
     "/appointments",
+    "/login", "/signup", "/doctor/signup", "/otp", "/forgot-password", "/reset-password",
   ].some((path) => location.pathname.startsWith(path));
 
   return (

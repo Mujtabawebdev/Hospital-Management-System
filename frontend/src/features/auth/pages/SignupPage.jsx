@@ -154,6 +154,7 @@ function SignupPage() {
                   type="tel"
                   name="phone"
                   placeholder="Phone Number"
+                  pattern="^(?:(?:(?:\\+|00)92)?|0)3[0-9]{9}$"
                   value={formData.phone}
                   onChange={handleInputChange}
                   id="phone"

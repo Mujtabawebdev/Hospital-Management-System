@@ -37,7 +37,7 @@ const DoctorsCard = ({ doctor }) => {
                 {specialization}
               </h3>
               <h3 className="text-main_theme text-sm font-medium uppercase">
-                {doctor.experience} EXP.
+                {doctor.experience} years experience
               </h3>
               <p className="text-text_grey/80 truncate overflow-hidden">
                 {qualifications}
@@ -49,7 +49,7 @@ const DoctorsCard = ({ doctor }) => {
                     You pay
                   </p>
                   <p className="text-dark_theme font-medium">
-                    Rs {fee}
+                    PKR {fee}
                   </p>
                 </div>
                 {/* Cashback */}
@@ -68,7 +68,7 @@ const DoctorsCard = ({ doctor }) => {
             <div>
               <p className="text-sm text-text_grey/80 font-medium">You pay</p>
               <p className="text-dark_theme font-medium">
-                Rs {fee}
+                PKR {fee}
               </p>
             </div>
 
@@ -90,20 +90,14 @@ const DoctorsCard = ({ doctor }) => {
           </div>
 
           {/* Actions */}
-          <div className="ctas grid grid-cols-1 md:grid-cols-2 gap-1">
+          <p className="px-4 pb-2 text-sm text-slate-600">Phone: {doctor.phone || "Not provided"}</p>
+          <div className="ctas grid grid-cols-1 gap-1">
             <NavLink
               to={`/appointment/book/${doctor._id}`}
               className="bg-dark_theme/95 hover:bg-dark_theme text-text px-4 py-4 rounded border-none font-medium text-sm tracking-tighter flex items-center justify-center md:justify-normal"
             >
               <FaVideo className="mr-2 text-text size-4" />
-              Book Digital Consult
-            </NavLink>
-            <NavLink
-              to={`/appointment/book/${doctor._id}`}
-              className="bg-light_theme/85 hover:bg-light_theme text-dark_theme px-3 py-3 rounded border-none font-semibold text-md tracking-tighter flex items-center justify-center md:justify-normal"
-            >
-              <FaHospital className="mr-2 text-dark_theme size-5" />
-              Book Hospital Visit
+              BOOK AN APPOINTMENT
             </NavLink>
           </div>
         </>

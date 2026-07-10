@@ -8,15 +8,11 @@ import { DoctorSchedule, SCHEDULE_STATUS } from "../models/doctor-schedule.model
 // Controller function for booking an appointment
 export const bookAppointment = asyncHandler(async (req, res, next) => {
     const patient = req.user;
-    const { doctorId, scheduleId, city, pincode, appointmentDate, department, issue, startTime, endTime } = req.body;
+    const { doctorId, scheduleId, issue } = req.body;
 
     // Check if all required fields are provided
-    if (!doctorId || !city || !pincode || !appointmentDate || !department) {
-        throw new ApiError(400, "Please provide all required fields");
-    }
-
-    if (!scheduleId && !startTime) {
-        throw new ApiError(400, "Please select appointment time");
+    if (!doctorId || !scheduleId) {
+        throw new ApiError(400, "Please choose a doctor-provided appointment slot");
     }
 
     const doctor = await Doctor.findById(doctorId);
@@ -24,17 +20,13 @@ export const bookAppointment = asyncHandler(async (req, res, next) => {
         throw new ApiError(404, "Doctor not found");
     }
 
-    let schedule = null;
-    if (scheduleId) {
-        schedule = await DoctorSchedule.findOne({
+    const schedule = await DoctorSchedule.findOne({
             _id: scheduleId,
             doctor: doctorId,
             status: SCHEDULE_STATUS.AVAILABLE,
-        });
-
-        if (!schedule) {
-            throw new ApiError(400, "Selected schedule slot is not available");
-        }
+    });
+    if (!schedule) {
+        throw new ApiError(400, "Selected schedule slot is not available");
     }
 
     // Check if appointment already exists for this patient and doctor
@@ -62,19 +54,19 @@ export const bookAppointment = asyncHandler(async (req, res, next) => {
         appointmentCharges: doctor.appointmentCharges || doctor.fee,
         fees: Number(doctor.fee || doctor.appointmentCharges || 0),
         currency: "pkr",
-        city,
-        pincode,
-        appointmentDate: schedule?.date || appointmentDate,
-        startTime: schedule?.startTime || startTime,
-        endTime: schedule?.endTime || endTime,
-        checkupTime: schedule?.date || appointmentDate,
-        department: department || doctor.department?.name || doctor.specialization,
+        city: patient.address?.city || doctor.address?.city || "Not specified",
+        pincode: patient.address?.pincode || "Not specified",
+        appointmentDate: new Date(),
+        startTime: schedule.startTime,
+        endTime: schedule.endTime,
+        checkupTime: new Date(),
+        department: doctor.department?.name || doctor.specialization || "General",
         issue,
         paymentStatus: PAYMENT_STATUS.PENDING,
     });
 
     if (schedule) {
-        schedule.status = SCHEDULE_STATUS.BOOKED;
+        schedule.status = SCHEDULE_STATUS.HELD;
         schedule.appointment = createdAppointment._id;
         schedule.lockedByAppointment = createdAppointment._id;
         schedule.lockedByUser = patient._id;
@@ -130,16 +122,21 @@ export const updateAppointmentStatus = asyncHandler(async (req, res, next) => {
 
     const { id } = req.params;
 
-    let appointment = await Appointment.findById(id);
+    let appointment = await Appointment.findOne({ _id: id, doctor: req.doctor._id });
     if (!appointment) {
         throw new ApiError(404, "Appointment not found");
     }
 
-    appointment = await Appointment.findByIdAndUpdate(id, req.body, {
+    const allowed = [APPOINTMENT_STATUS.ACCEPTED, APPOINTMENT_STATUS.REJECTED, APPOINTMENT_STATUS.COMPLETED];
+    if (!allowed.includes(req.body.status)) throw new ApiError(400, "Invalid appointment status");
+    appointment = await Appointment.findByIdAndUpdate(id, { status: req.body.status }, {
         new: true,
         runValidators: true,
         useFindAndModify: false,
     });
+    if (appointment.schedule && req.body.status === APPOINTMENT_STATUS.REJECTED) {
+      await DoctorSchedule.findByIdAndUpdate(appointment.schedule, { status: SCHEDULE_STATUS.AVAILABLE, appointment: null, lockedByAppointment: null, lockedByUser: null });
+    }
     res
         .status(200)
         .json(new ApiResponse(200, appointment, "Appointment Status Updated!"));

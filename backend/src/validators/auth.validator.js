@@ -4,7 +4,7 @@ import { USER_ROLES } from "../constants/roles.js";
 const name = z.string().trim().min(2).max(80);
 const email = z.string().trim().email().toLowerCase();
 const password = z.string().min(8).max(128);
-const phone = z.string().trim().min(7).max(20);
+const phone = z.string().trim().regex(/^(?:(?:(?:\+|00)92)?|0)3[0-9]{9}$/, "Enter a valid Pakistani mobile number");
 const jsonField = (schema) =>
   z.preprocess((value) => {
     if (typeof value !== "string") return value;

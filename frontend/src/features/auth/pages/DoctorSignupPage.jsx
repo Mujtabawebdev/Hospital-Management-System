@@ -28,7 +28,8 @@ const initialForm = {
   pincode: "",
   biography: "",
   availableDay: "Monday",
-  availableSlots: "",
+  startTime: "",
+  endTime: "",
   profilePicture: null,
   documents: [],
 };
@@ -120,13 +121,8 @@ function DoctorSignupPage() {
       return;
     }
 
-    const slots = formData.availableSlots
-      .split(",")
-      .map((slot) => slot.trim())
-      .filter(Boolean);
-
-    if (slots.length === 0) {
-      toast.error("Please add at least one available slot");
+    if (!formData.startTime || !formData.endTime || formData.startTime >= formData.endTime) {
+      toast.error("Please choose a valid available time range");
       return;
     }
 
@@ -137,7 +133,7 @@ function DoctorSignupPage() {
       country: formData.country,
       pincode: formData.pincode,
     };
-    const availability = [{ day: formData.availableDay, slots }];
+    const availability = [{ day: formData.availableDay, slots: [`${formData.startTime} - ${formData.endTime}`] }];
 
     [
       "firstName",
@@ -197,7 +193,7 @@ function DoctorSignupPage() {
           <Input label="First Name" name="firstName" value={formData.firstName} onChange={handleInputChange} minLength={2} required />
           <Input label="Last Name" name="lastName" value={formData.lastName} onChange={handleInputChange} minLength={2} required />
           <Input label="Email" type="email" name="email" value={formData.email} onChange={handleInputChange} required />
-          <Input label="Phone" name="phone" value={formData.phone} onChange={handleInputChange} minLength={7} maxLength={20} required />
+          <Input label="Phone" name="phone" value={formData.phone} onChange={handleInputChange} pattern="^(?:(?:(?:\\+|00)92)?|0)3[0-9]{9}$" placeholder="03001234567" required />
           <Input label="Password" type="password" name="password" value={formData.password} onChange={handleInputChange} minLength={8} required />
           <Input label="Confirm Password" type="password" name="cpassword" value={formData.cpassword} onChange={handleInputChange} minLength={8} required />
 
@@ -216,15 +212,15 @@ function DoctorSignupPage() {
               </option>
             ))}
           </Select>
-          <Input label="Experience" type="number" min="0" max="70" name="experience" value={formData.experience} onChange={handleInputChange} required />
+          <Input label="Experience (Years)" type="number" min="0" max="70" name="experience" value={formData.experience} onChange={handleInputChange} required />
           <Input label="Hospital" name="hospital" value={formData.hospital} onChange={handleInputChange} minLength={2} maxLength={160} required />
           <Input label="Clinic" name="clinic" value={formData.clinic} onChange={handleInputChange} maxLength={160} />
-          <Input label="Consultation Fee" type="number" min="0" name="fee" value={formData.fee} onChange={handleInputChange} required />
+          <Input label="Consultation Fee (PKR)" type="number" min="0" name="fee" value={formData.fee} onChange={handleInputChange} required />
           <Input label="License Number" name="licenseNumber" value={formData.licenseNumber} onChange={handleInputChange} minLength={3} maxLength={80} required />
           <Input label="Address" name="address" value={formData.address} onChange={handleInputChange} minLength={2} maxLength={160} required />
           <Input label="City" name="city" value={formData.city} onChange={handleInputChange} maxLength={80} required />
           <Input label="Country" name="country" value={formData.country} onChange={handleInputChange} maxLength={80} required />
-          <Input label="Pincode" name="pincode" value={formData.pincode} onChange={handleInputChange} maxLength={20} required />
+          <Input label="Postal Code" name="pincode" value={formData.pincode} onChange={handleInputChange} maxLength={20} required />
 
           <Select label="Available Day" name="availableDay" value={formData.availableDay} onChange={handleInputChange} required>
             <option value="Monday">Monday</option>
@@ -235,14 +231,12 @@ function DoctorSignupPage() {
             <option value="Saturday">Saturday</option>
             <option value="Sunday">Sunday</option>
           </Select>
-          <Input
-            label="Available Slots"
-            name="availableSlots"
-            value={formData.availableSlots}
-            onChange={handleInputChange}
-            placeholder="10:00 AM, 11:30 AM"
-            required
-          />
+          <Select label="From" name="startTime" value={formData.startTime} onChange={handleInputChange} required>
+            <option value="">Start time</option>{Array.from({ length: 24 }, (_, i) => `${String(i).padStart(2, "0")}:00`).map((time) => <option key={time}>{time}</option>)}
+          </Select>
+          <Select label="To" name="endTime" value={formData.endTime} onChange={handleInputChange} required>
+            <option value="">End time</option>{Array.from({ length: 24 }, (_, i) => `${String(i).padStart(2, "0")}:00`).map((time) => <option key={time}>{time}</option>)}
+          </Select>
           <div className="md:col-span-2">
             <Input label="Profile Picture" type="file" name="profilePicture" onChange={handleInputChange} accept="image/*" />
             {previewUrl && (
@@ -252,7 +246,7 @@ function DoctorSignupPage() {
               </div>
             )}
           </div>
-          <Input label="Documents" type="file" name="documents" onChange={handleInputChange} multiple />
+          <Input label="Certificates or Degree" type="file" name="documents" onChange={handleInputChange} accept="application/pdf,image/*" />
 
           <Textarea
             label="Biography"

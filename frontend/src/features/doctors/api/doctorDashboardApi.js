@@ -30,6 +30,11 @@ export const createDoctorSchedule = async (payload) => {
   return response.data?.data;
 };
 
+export const deleteDoctorSchedule = async (scheduleId) => {
+  const response = await api.delete(`/doctor/schedule/${scheduleId}`);
+  return response.data?.data;
+};
+
 export const getAvailableDoctorSchedule = async (doctorId) => {
   const response = await api.get(`/doctor/schedule/doctor/${doctorId}`);
   return response.data?.data || [];

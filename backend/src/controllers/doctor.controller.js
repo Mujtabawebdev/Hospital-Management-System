@@ -4,6 +4,7 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import { Doctor } from "../models/doctor.model.js";
 import { DOCTOR_STATUS, USER_ROLES } from "../constants/roles.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
+import { DoctorSchedule, SCHEDULE_STATUS } from "../models/doctor-schedule.model.js";
 
 const normalizeAddress = (address) => {
   if (typeof address === "string") {
@@ -90,6 +91,12 @@ export const registerDoctor = asyncHandler(async (req, res) => {
 
   const uploads = await uploadDoctorFiles(req);
   const doctor = await Doctor.create(mapDoctorPayload(payload, uploads));
+  await DoctorSchedule.insertMany((payload.availability || []).flatMap(({ day, slots }) =>
+    slots.map((slot) => {
+      const [startTime, endTime] = slot.split(" - ");
+      return { doctor: doctor._id, day, startTime, endTime, status: SCHEDULE_STATUS.AVAILABLE };
+    }),
+  ));
 
   res
     .status(201)
@@ -108,6 +115,12 @@ export const addNewDoctor = asyncHandler(async (req, res) => {
   const doctor = await Doctor.create(
     mapDoctorPayload({ ...payload, status: DOCTOR_STATUS.APPROVED }, uploads),
   );
+  await DoctorSchedule.insertMany((payload.availability || []).flatMap(({ day, slots }) =>
+    slots.map((slot) => {
+      const [startTime, endTime] = slot.split(" - ");
+      return { doctor: doctor._id, day, startTime, endTime, status: SCHEDULE_STATUS.AVAILABLE };
+    }),
+  ));
 
   res.status(201).json(new ApiResponse(201, doctor, "Doctor created and approved"));
 });

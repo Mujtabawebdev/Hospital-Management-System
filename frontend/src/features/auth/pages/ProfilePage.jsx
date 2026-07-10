@@ -315,7 +315,7 @@ function ProfilePage() {
           <Input label="First Name" name="firstName" value={form.firstName} onChange={handleChange} minLength={2} required />
           <Input label="Last Name" name="lastName" value={form.lastName} onChange={handleChange} minLength={2} required />
           <Input label="Email" type="email" name="email" value={form.email} disabled inputClassName="bg-slate-100 text-slate-500" />
-          <Input label="Phone" name="phone" value={form.phone} onChange={handleChange} minLength={7} maxLength={20} required />
+          <Input label="Phone" name="phone" value={form.phone} onChange={handleChange} pattern="^(?:(?:(?:\\+|00)92)?|0)3[0-9]{9}$" placeholder="03001234567" required />
           <Select label="Gender" name="gender" value={form.gender} onChange={handleChange}>
             <option value="">Select Gender</option>
             <option value="Male">Male</option>
@@ -326,7 +326,7 @@ function ProfilePage() {
           <Input label="Address" name="addressLine1" value={form.addressLine1} onChange={handleChange} className="md:col-span-2" />
           <Input label="City" name="addressCity" value={form.addressCity} onChange={handleChange} />
           <Input label="Country" name="addressCountry" value={form.addressCountry} onChange={handleChange} />
-          <Input label="Pincode" name="addressPincode" value={form.addressPincode} onChange={handleChange} />
+          <Input label="Postal Code" name="addressPincode" value={form.addressPincode} onChange={handleChange} />
 
           {isDoctor && (
             <>

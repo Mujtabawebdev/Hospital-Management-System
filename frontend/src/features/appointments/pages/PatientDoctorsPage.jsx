@@ -99,11 +99,12 @@ function PatientDoctorsPage() {
                             {rating}
                           </span>
                           <span className="rounded-full bg-teal-50 px-3 py-1 text-xs font-black text-teal-700">
-                            Rs {fee}
+                            PKR {fee}
                           </span>
                         </div>
                       </div>
                     </div>
+                    <p className="mt-3 text-sm font-semibold text-slate-600">Phone: {doctor.phone || "Not provided"}</p>
                     <Link
                       to={`/appointment/book/${doctor._id}`}
                       className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-main_theme px-4 py-3 text-sm font-black text-white transition hover:bg-blue-700"

@@ -1,6 +1,6 @@
 import React from "react";
-import { NavLink, Outlet } from "react-router-dom";
-import { CalendarDays, LayoutDashboard, LogOut, Plus, UserCircle, Users } from "lucide-react";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import { ArrowLeft, CalendarDays, LayoutDashboard, LogOut, Plus, UserCircle, Users } from "lucide-react";
 
 const links = [
   { to: "/doctor/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -10,6 +10,7 @@ const links = [
 ];
 
 function DoctorDashboardLayout() {
+  const navigate = useNavigate();
   return (
     <div className="min-h-screen bg-[#f8fbff] text-slate-900 md:flex">
       <aside className="m-3 rounded-3xl border border-slate-200 bg-white p-4 shadow-sm md:sticky md:top-3 md:h-[calc(100vh-24px)] md:w-72">
@@ -25,6 +26,7 @@ function DoctorDashboardLayout() {
           </div>
         </div>
         <nav className="flex gap-2 overflow-x-auto md:flex-col md:overflow-visible">
+          <button type="button" onClick={() => navigate(-1)} className="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-black text-slate-600 hover:bg-light_theme"><ArrowLeft size={18} />Back</button>
           {links.map(({ to, label, icon: Icon }) => (
             <NavLink
               key={to}

@@ -175,7 +175,7 @@ function AdminAddDoctorPage() {
             <Input label="First Name" name="firstName" value={form.firstName} onChange={handleChange} minLength={2} required />
             <Input label="Last Name" name="lastName" value={form.lastName} onChange={handleChange} minLength={2} required />
             <Input label="Email" type="email" name="email" value={form.email} onChange={handleChange} required />
-            <Input label="Phone" name="phone" value={form.phone} onChange={handleChange} minLength={7} maxLength={20} required />
+            <Input label="Phone" name="phone" value={form.phone} onChange={handleChange} pattern="^(?:(?:(?:\\+|00)92)?|0)3[0-9]{9}$" placeholder="03001234567" required />
             <Input label="Password" type="password" name="password" value={form.password} onChange={handleChange} minLength={8} required />
             <Select label="Gender" name="gender" value={form.gender} onChange={handleChange} required>
               <option value="">Select Gender</option>
@@ -200,7 +200,7 @@ function AdminAddDoctorPage() {
             <Input label="Address" name="address" value={form.address} onChange={handleChange} minLength={2} required />
             <Input label="City" name="city" value={form.city} onChange={handleChange} required />
             <Input label="Country" name="country" value={form.country} onChange={handleChange} required />
-            <Input label="Pincode" name="pincode" value={form.pincode} onChange={handleChange} required />
+            <Input label="Postal Code" name="pincode" value={form.pincode} onChange={handleChange} required />
             <Select label="Available Day" name="availableDay" value={form.availableDay} onChange={handleChange} required>
               <option value="Monday">Monday</option>
               <option value="Tuesday">Tuesday</option>

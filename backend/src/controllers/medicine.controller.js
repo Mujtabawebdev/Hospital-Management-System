@@ -20,6 +20,9 @@ export const addNewMedicine = asyncHandler(async (req, res) => {
     ) {
         throw new ApiError(400, "Please Fill All Medicine Details!");
     }
+    if (new Date(expiryDate) <= new Date(new Date().setHours(0, 0, 0, 0))) {
+        throw new ApiError(400, "Expiry date must be in the future");
+    }
 
     let existedMedicine = await Medicine.findOne({ name });
     if (existedMedicine) {
@@ -140,7 +143,10 @@ export const updateMedicine = asyncHandler(async (req, res) => {
     if (description !== undefined) updateFields.description = description;
     if (category !== undefined) updateFields.category = category;
     if (manufacturer !== undefined) updateFields.manufacturer = manufacturer;
-    if (expiryDate !== undefined) updateFields.expiryDate = expiryDate;
+    if (expiryDate !== undefined) {
+        if (new Date(expiryDate) <= new Date(new Date().setHours(0, 0, 0, 0))) throw new ApiError(400, "Expiry date must be in the future");
+        updateFields.expiryDate = expiryDate;
+    }
     if (stock !== undefined) updateFields.stock = stock;
     if (discount !== undefined) updateFields.discount = discount;
     if (req.file?.path) {

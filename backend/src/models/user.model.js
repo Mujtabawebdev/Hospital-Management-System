@@ -31,6 +31,7 @@ const userSchema = new mongoose.Schema(
             required: [true, "Phone is required"],
             minLength: [7, "Phone Number must contain at least 7 digits"],
             maxLength: [20, "Phone Number must contain at most 20 digits"],
+            match: [/^(?:(?:(?:\+|00)92)?|0)3[0-9]{9}$/, "Enter a valid Pakistani mobile number"],
 
         },
         address: {

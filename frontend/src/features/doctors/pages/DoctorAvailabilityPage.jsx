@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { CalendarPlus, Clock3 } from "lucide-react";
-import { Button, Input } from "../../../shared/components/ui";
+import { CalendarPlus, Clock3, Trash2 } from "lucide-react";
+import { Button, Select } from "../../../shared/components/ui";
 import DashboardCard from "../../../shared/components/dashboard/DashboardCard.jsx";
 import StatusBadge from "../../../shared/components/dashboard/StatusBadge.jsx";
 import EmptyState from "../../../shared/components/dashboard/EmptyState.jsx";
-import { createDoctorSchedule, getDoctorSchedule } from "../api/doctorDashboardApi.js";
+import { createDoctorSchedule, getDoctorSchedule, deleteDoctorSchedule } from "../api/doctorDashboardApi.js";
 
 const initialForm = {
-  date: "",
+  day: "Monday",
   startTime: "",
   endTime: "",
 };
@@ -68,13 +68,13 @@ function DoctorAvailabilityPage() {
           </div>
           <div>
             <h2 className="text-xl font-black text-[#0f1f44]">Add New Slot</h2>
-            <p className="text-sm font-semibold text-slate-500">Choose date and consultation time.</p>
+            <p className="text-sm font-semibold text-slate-500">Choose a weekly day and consultation time.</p>
           </div>
         </div>
         <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-4 md:grid-cols-4">
-          <Input label="Date" type="date" name="date" value={form.date} onChange={handleChange} required />
-          <Input label="Start Time" type="time" name="startTime" value={form.startTime} onChange={handleChange} required />
-          <Input label="End Time" type="time" name="endTime" value={form.endTime} onChange={handleChange} required />
+          <Select label="Day" name="day" value={form.day} onChange={handleChange}>{["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"].map(day => <option key={day}>{day}</option>)}</Select>
+          <Select label="Start Time" name="startTime" value={form.startTime} onChange={handleChange} required><option value="">Start time</option>{Array.from({length:24},(_,i)=>`${String(i).padStart(2,"0")}:00`).map(time=><option key={time}>{time}</option>)}</Select>
+          <Select label="End Time" name="endTime" value={form.endTime} onChange={handleChange} required><option value="">End time</option>{Array.from({length:24},(_,i)=>`${String(i).padStart(2,"0")}:00`).map(time=><option key={time}>{time}</option>)}</Select>
           <div className="flex items-end">
             <Button type="submit" className="w-full gap-2 rounded-xl">
               <CalendarPlus size={16} />
@@ -98,15 +98,15 @@ function DoctorAvailabilityPage() {
             <table className="w-full min-w-[640px] text-left text-sm">
               <thead className="bg-slate-50 text-slate-600">
                 <tr>
-                  <th className="p-4">Date</th>
+                  <th className="p-4">Day</th>
                   <th className="p-4">Time</th>
-                  <th className="p-4">Status</th>
+                  <th className="p-4">Status</th><th className="p-4">Actions</th>
                 </tr>
               </thead>
               <tbody>
             {schedule.map((slot) => (
               <tr key={slot._id} className="border-t border-slate-100">
-                <td className="p-4 font-black text-[#0f1f44]">{slot.date ? new Date(slot.date).toLocaleDateString() : "-"}</td>
+                <td className="p-4 font-black text-[#0f1f44]">{slot.day}</td>
                 <td className="p-4">
                   <span className="inline-flex items-center gap-2 font-semibold text-slate-600">
                     <Clock3 size={16} className="text-blue-600" />
@@ -114,6 +114,7 @@ function DoctorAvailabilityPage() {
                   </span>
                 </td>
                 <td className="p-4"><StatusBadge status={slot.status} /></td>
+                <td className="p-4">{slot.status === "Available" && <button type="button" onClick={async()=>{ await deleteDoctorSchedule(slot._id); loadSchedule(); }} className="text-red-600"><Trash2 size={18}/></button>}</td>
               </tr>
             ))}
               </tbody>

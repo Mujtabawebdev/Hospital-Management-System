@@ -7,6 +7,7 @@ import {
   createDoctorSchedule,
   getDoctorSchedulesByDoctorId,
   getMyDoctorSchedule,
+  deleteDoctorSchedule,
 } from "../controllers/doctor-schedule.controller.js";
 import { isDoctorAuthenticated } from "../middleware/auth.middleware.js";
 
@@ -16,6 +17,7 @@ router.get("/appointments", isDoctorAuthenticated, getDoctorAppointments);
 router.patch("/appointments/:appointmentId/complete", isDoctorAuthenticated, completeAppointment);
 router.post("/schedule", isDoctorAuthenticated, createDoctorSchedule);
 router.get("/schedule/me", isDoctorAuthenticated, getMyDoctorSchedule);
+router.delete("/schedule/:scheduleId", isDoctorAuthenticated, deleteDoctorSchedule);
 router.get("/schedule/doctor/:doctorId", getDoctorSchedulesByDoctorId);
 
 export default router;

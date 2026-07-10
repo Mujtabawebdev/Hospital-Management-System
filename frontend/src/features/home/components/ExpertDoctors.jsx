@@ -74,7 +74,7 @@ function ExpertDoctors() {
                         {rating}
                       </p>
                       <p className="rounded-full bg-teal-50 px-3 py-1 text-sm font-bold text-teal-700">
-                        Rs {fee}
+                        PKR {fee}
                       </p>
                     </div>
                     <Link
@@ -82,7 +82,7 @@ function ExpertDoctors() {
                       className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-4 py-3 text-sm font-black text-white transition hover:bg-blue-700"
                     >
                       <CalendarCheck className="h-4 w-4" aria-hidden="true" />
-                      Book Now
+                      BOOK AN APPOINTMENT
                     </Link>
                   </div>
                 </Card>

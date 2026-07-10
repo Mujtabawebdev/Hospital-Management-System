@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import { Button, Card, Input, Select, Textarea } from "../../../shared/components/ui";
+import { Button, Card, Textarea } from "../../../shared/components/ui";
 import {
   bookDoctorAppointment,
   getAvailableDoctorSchedule,
@@ -48,14 +48,8 @@ function BookAppointmentPage() {
   const navigate = useNavigate();
   const { state } = useLocation();
   const [slots, setSlots] = useState([]);
-  const [departmentOptions, setDepartmentOptions] = useState(getSpecialityOptions());
   const [form, setForm] = useState({
     scheduleId: "",
-    appointmentDate: state?.appointmentDate || "",
-    startTime: state?.startTime || "",
-    city: "",
-    pincode: "",
-    department: state?.department || "General",
     issue: "",
   });
 
@@ -65,25 +59,7 @@ function BookAppointmentPage() {
       .catch((error) => toast.error(error.response?.data?.message || "Failed to load doctor slots"));
   }, [doctorId]);
 
-  useEffect(() => {
-    let isMounted = true;
-
-    fetchSpecialties()
-      .then((items) => {
-        if (isMounted) setDepartmentOptions(getSpecialityOptions(items));
-      })
-      .catch(() => {
-        if (isMounted) setDepartmentOptions(getSpecialityOptions());
-      });
-
-    return () => {
-      isMounted = false;
-    };
-  }, []);
-
-  const selectedSlot = slots.find((slot) => slot._id === form.scheduleId);
-  const canBook = Boolean(form.scheduleId || form.appointmentDate);
-  const today = new Date().toISOString().split("T")[0];
+  const canBook = Boolean(form.scheduleId);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -97,9 +73,6 @@ function BookAppointmentPage() {
         ...form,
         doctorId,
         scheduleId: form.scheduleId || undefined,
-        appointmentDate: selectedSlot?.date || form.appointmentDate,
-        startTime: selectedSlot?.startTime || form.startTime,
-        endTime: selectedSlot?.endTime || getEndTime(form.startTime),
       });
       toast.success("Appointment booked");
       navigate("/appointments");
@@ -120,59 +93,23 @@ function BookAppointmentPage() {
                 <button
                   type="button"
                   key={slot._id}
-                  onClick={() => setForm((current) => ({ ...current, scheduleId: slot._id, startTime: "" }))}
+                  onClick={() => setForm((current) => ({ ...current, scheduleId: slot._id }))}
                   className={`rounded-md border p-3 text-left ${
                     form.scheduleId === slot._id
                       ? "border-main_theme bg-light_theme"
                       : "border-slate-200 bg-white"
                   }`}
                 >
-                  <p className="font-bold">{new Date(slot.date).toLocaleDateString()}</p>
+                  <p className="font-bold">{slot.day}</p>
                   <p className="text-sm text-slate-600">{slot.startTime} - {slot.endTime}</p>
                 </button>
               ))}
             </div>
             {slots.length === 0 && (
               <p className="mt-2 text-sm text-slate-500">
-                No available slot found. Choose a preferred appointment date below.
+                No available slot found for this doctor.
               </p>
             )}
-          </div>
-          <div className="grid gap-4 md:grid-cols-2">
-            <Input
-              label="Appointment Date"
-              type="date"
-              name="appointmentDate"
-              value={form.appointmentDate}
-              onChange={handleChange}
-              min={today}
-              required={!form.scheduleId}
-              disabled={Boolean(form.scheduleId)}
-            />
-            <Select
-              label="Preferred Time"
-              name="startTime"
-              value={form.startTime}
-              onChange={handleChange}
-              required={!form.scheduleId}
-              disabled={Boolean(form.scheduleId)}
-            >
-              <option value="">Select Time</option>
-              {appointmentTimes.map((time) => (
-                <option key={time} value={time}>
-                  {time}
-                </option>
-              ))}
-            </Select>
-            <Input label="City" name="city" value={form.city} onChange={handleChange} required />
-            <Input label="Pincode" name="pincode" value={form.pincode} onChange={handleChange} required />
-            <Select label="Department" name="department" value={form.department} onChange={handleChange} required>
-              {departmentOptions.map((department) => (
-                <option key={department} value={department}>
-                  {department}
-                </option>
-              ))}
-            </Select>
           </div>
           <Textarea label="Issue" name="issue" value={form.issue} onChange={handleChange} rows={4} />
           <Button type="submit" disabled={!canBook}>Book Appointment</Button>

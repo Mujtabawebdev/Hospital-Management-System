@@ -13,7 +13,7 @@ const app = express();
 // cors middleware configuration connects frontend to backend
 app.use(
   cors({
-    origin: [env.frontendUrl],
+    origin: env.frontendUrls,
     methods: ["GET", "POST", "DELETE", "PUT", "PATCH"],
     credentials: true,
   }),

@@ -105,6 +105,7 @@ function MyAppointmentsPage() {
                                 {appointment.startTime && `${appointment.startTime} - ${appointment.endTime}`}
                               </p>
                               <p className="mt-2 text-sm font-semibold text-slate-700">{appointment.issue || "General consultation"}</p>
+                              <p className="mt-1 text-sm font-semibold text-slate-600">Phone: {appointment.doctor?.phone || "Not provided"}</p>
                             </div>
                           </div>
                           <div className="text-left md:text-right">

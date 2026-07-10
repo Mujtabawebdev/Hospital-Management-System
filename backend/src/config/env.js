@@ -16,6 +16,10 @@ export const env = {
   jwtExpiresIn: process.env.JWT_EXPIRES || "10h",
   cookieExpireMs: toNumber(process.env.COOKIE_EXPIRE, 10 * 60 * 60 * 1000),
   frontendUrl: process.env.FRONTEND_URL || "http://localhost:5173",
+  frontendUrls: (process.env.FRONTEND_URLS || process.env.FRONTEND_URL || "http://localhost:5173")
+    .split(",")
+    .map((url) => url.trim())
+    .filter(Boolean),
   cloudinary: {
     cloudName: process.env.CLOUDINARY_CLOUD_NAME,
     apiKey: process.env.CLOUDINARY_API_KEY,

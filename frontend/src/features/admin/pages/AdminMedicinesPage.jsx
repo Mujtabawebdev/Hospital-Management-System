@@ -196,6 +196,7 @@ function AdminMedicinesPage() {
             type="date"
             value={productForm.expiryDate}
             onChange={handleProductChange}
+            min={new Date().toISOString().slice(0, 10)}
             required
           />
           <Input
@@ -337,7 +338,7 @@ function AdminMedicinesPage() {
                               ))}
                             </Select>
                             <Input label="Manufacturer" name="manufacturer" value={editForm.manufacturer} onChange={handleEditChange} required />
-                            <Input label="Expiry date" name="expiryDate" type="date" value={editForm.expiryDate} onChange={handleEditChange} required />
+                            <Input label="Expiry date" name="expiryDate" type="date" min={new Date().toISOString().slice(0, 10)} value={editForm.expiryDate} onChange={handleEditChange} required />
                             <Input label="Quantity" name="stock" type="number" min="0" value={editForm.stock} onChange={handleEditChange} required />
                             <Input label="Discount" name="discount" type="number" min="0" value={editForm.discount} onChange={handleEditChange} />
                             <Input label="New image" name="image" type="file" accept="image/*" onChange={handleEditChange} />
