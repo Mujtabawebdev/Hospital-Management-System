@@ -5,6 +5,7 @@ import { Doctor } from "../models/doctor.model.js";
 import { DOCTOR_STATUS, USER_ROLES } from "../constants/roles.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { DoctorSchedule, SCHEDULE_STATUS } from "../models/doctor-schedule.model.js";
+import { issueEmailOtp } from "../services/email-verification.service.js";
 
 const normalizeAddress = (address) => {
   if (typeof address === "string") {
@@ -98,9 +99,8 @@ export const registerDoctor = asyncHandler(async (req, res) => {
     }),
   ));
 
-  res
-    .status(201)
-    .json(new ApiResponse(201, doctor, "Doctor registration submitted for admin approval"));
+  await issueEmailOtp(doctor);
+  res.status(201).json(new ApiResponse(201, { email: doctor.email, role: doctor.role }, "Verification code sent to your email"));
 });
 
 export const addNewDoctor = asyncHandler(async (req, res) => {

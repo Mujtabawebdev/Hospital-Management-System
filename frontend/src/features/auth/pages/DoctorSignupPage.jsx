@@ -171,7 +171,7 @@ function DoctorSignupPage() {
       setSubmitting(true);
       const response = await api.post("/user/doctor/register", payload);
       toast.success(response.data?.message || "Doctor registration submitted for approval");
-      navigate("/login");
+      navigate("/verify-email", { state: response.data?.data });
     } catch (error) {
       toast.error(formatApiError(error));
     } finally {
@@ -193,7 +193,7 @@ function DoctorSignupPage() {
           <Input label="First Name" name="firstName" value={formData.firstName} onChange={handleInputChange} minLength={2} required />
           <Input label="Last Name" name="lastName" value={formData.lastName} onChange={handleInputChange} minLength={2} required />
           <Input label="Email" type="email" name="email" value={formData.email} onChange={handleInputChange} required />
-          <Input label="Phone" name="phone" value={formData.phone} onChange={handleInputChange} pattern="^(?:(?:(?:\\+|00)92)?|0)3[0-9]{9}$" placeholder="03001234567" required />
+          <Input label="Phone" type="tel" inputMode="numeric" name="phone" value={formData.phone} onChange={(e) => setFormData((current) => ({ ...current, phone: e.target.value.replace(/\D/g, "") }))} pattern="03[0-9]{9}" maxLength={11} placeholder="03001234567 (11 digits)" required />
           <Input label="Password" type="password" name="password" value={formData.password} onChange={handleInputChange} minLength={8} required />
           <Input label="Confirm Password" type="password" name="cpassword" value={formData.cpassword} onChange={handleInputChange} minLength={8} required />
 
@@ -201,7 +201,6 @@ function DoctorSignupPage() {
             <option value="">Select Gender</option>
             <option value="Male">Male</option>
             <option value="Female">Female</option>
-            <option value="Other">Other</option>
           </Select>
           <Input label="Qualification" name="qualification" value={formData.qualification} onChange={handleInputChange} minLength={2} maxLength={200} placeholder="MBBS, FCPS" required />
           <Select label="Specialization" name="specialization" value={formData.specialization} onChange={handleInputChange} required>

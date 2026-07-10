@@ -17,6 +17,7 @@ export const publicUser = (user) => ({
   profilePicture: user.profilePicture,
   role: user.role,
   status: user.status,
+  emailVerified: user.emailVerified,
 });
 
 export const sendAuthResponse = (res, user, message, statusCode = 200) => {

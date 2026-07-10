@@ -42,7 +42,7 @@ export const patientRegisterSchema = z.object({
     phone,
     address: jsonField(z.union([z.string().trim().min(2).max(300), addressSchema]).optional()),
     dob: z.coerce.date().optional(),
-    gender: z.enum(["Male", "Female", "Other"]).optional(),
+    gender: z.enum(["Male", "Female"]).optional(),
     password,
   }),
 });
@@ -60,7 +60,7 @@ export const doctorRegisterSchema = z.object({
     hospital: z.string().trim().min(2).max(160),
     clinic: z.string().trim().max(160).optional(),
     fee: z.coerce.number().min(0),
-    gender: z.enum(["Male", "Female", "Other"]),
+    gender: z.enum(["Male", "Female"]),
     address: jsonField(z.union([z.string().trim().min(2).max(300), addressSchema])),
     biography: z.string().trim().min(20).max(2000),
     licenseNumber: z.string().trim().min(3).max(80),

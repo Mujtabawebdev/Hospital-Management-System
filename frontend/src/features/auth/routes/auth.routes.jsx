@@ -2,8 +2,10 @@ import LoginPage from "../pages/LoginPage.jsx";
 import DoctorSignupPage from "../pages/DoctorSignupPage.jsx";
 import ProfilePage from "../pages/ProfilePage.jsx";
 import SignupPage from "../pages/SignupPage.jsx";
+import VerifyEmailPage from "../pages/VerifyEmailPage.jsx";
 
 export const authRoutes = [
+  { path: "/verify-email", element: <VerifyEmailPage /> },
   {
     path: "/login",
     element: <LoginPage />,

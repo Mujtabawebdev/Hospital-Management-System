@@ -60,8 +60,11 @@ const doctorSchema = new mongoose.Schema({
     gender: {
         type: String,
         required: [true, "Gender Is Required!"],
-        enum: ["Male", "Female", "Other"],
+        enum: ["Male", "Female"],
     },
+    emailVerified: { type: Boolean, default: false },
+    emailVerificationOtp: { type: String, select: false },
+    emailVerificationExpires: { type: Date, select: false },
     department: {
         name: {
             type: String,

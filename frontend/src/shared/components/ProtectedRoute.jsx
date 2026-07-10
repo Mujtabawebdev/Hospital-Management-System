@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import { Navigate, useLocation } from "react-router-dom";
 import { Context } from "../context/AppContext.jsx";
 
-export default function ProtectedRoute({ children, roles = [] }) {
+export default function ProtectedRoute({ children, roles = [], statuses = [] }) {
   const { isAuthenticated, isAuthLoading, user } = useContext(Context);
   const location = useLocation();
 
@@ -13,6 +13,7 @@ export default function ProtectedRoute({ children, roles = [] }) {
     const dashboard = user?.role === "Admin" ? "/admin" : user?.role === "Doctor" ? "/doctor/dashboard" : "/";
     return <Navigate to={dashboard} replace />;
   }
+  if (statuses.length && !statuses.includes(user?.status)) return <Navigate to="/doctor/profile" replace />;
 
   return children;
 }

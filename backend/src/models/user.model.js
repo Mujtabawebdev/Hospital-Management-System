@@ -63,8 +63,11 @@ const userSchema = new mongoose.Schema(
         },
         gender: {
             type: String,
-            enum: ["Male", "Female", "Other"],
+            enum: ["Male", "Female"],
         },
+        emailVerified: { type: Boolean, default: false },
+        emailVerificationOtp: { type: String, select: false },
+        emailVerificationExpires: { type: Date, select: false },
         profilePicture: {
             url: String,
             publicId: String,

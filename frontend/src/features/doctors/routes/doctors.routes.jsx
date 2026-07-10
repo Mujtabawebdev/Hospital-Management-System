@@ -6,6 +6,8 @@ import DoctorDashboardLayout from "../components/DoctorDashboardLayout.jsx";
 import ProfilePage from "../../auth/pages/ProfilePage.jsx";
 import ProtectedRoute from "../../../shared/components/ProtectedRoute.jsx";
 
+const approvedDoctor = (page) => <ProtectedRoute roles={["Doctor"]} statuses={["Approved"]}>{page}</ProtectedRoute>;
+
 export const doctorsRoutes = [
   {
     path: "/alldoctors",
@@ -17,15 +19,15 @@ export const doctorsRoutes = [
     children: [
       {
         path: "dashboard",
-        element: <DoctorDashboardPage />,
+        element: approvedDoctor(<DoctorDashboardPage />),
       },
       {
         path: "appointments",
-        element: <DoctorAppointmentsPage />,
+        element: approvedDoctor(<DoctorAppointmentsPage />),
       },
       {
         path: "availability",
-        element: <DoctorAvailabilityPage />,
+        element: approvedDoctor(<DoctorAvailabilityPage />),
       },
       {
         path: "profile",

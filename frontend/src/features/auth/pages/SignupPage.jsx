@@ -51,7 +51,7 @@ function SignupPage() {
       };
       const response = await api.post("/user/patient/register", payload);
       toast.success(response.data?.message || "Account created successfully!");
-      navigate("/login");
+      navigate("/verify-email", { state: response.data?.data });
     } catch (error) {
       console.error("There was a problem with the fetch operation:", error);
       const validationMessage = error.response?.data?.errors?.[0]?.message;
@@ -153,10 +153,10 @@ function SignupPage() {
                   label="Phone Number:"
                   type="tel"
                   name="phone"
-                  placeholder="Phone Number"
+                  placeholder="03001234567 (11 digits)"
                   pattern="^(?:(?:(?:\\+|00)92)?|0)3[0-9]{9}$"
                   value={formData.phone}
-                  onChange={handleInputChange}
+                  onChange={(e) => setFormData((current) => ({ ...current, phone: e.target.value.replace(/\D/g, "") }))}
                   id="phone"
                   required
                 />

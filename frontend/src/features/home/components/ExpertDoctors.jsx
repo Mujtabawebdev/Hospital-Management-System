@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { CalendarCheck, Heart, Star, UserRound } from "lucide-react";
+import { CalendarCheck, Star, UserRound } from "lucide-react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { Button, Card } from "../../../shared/components/ui";
@@ -55,9 +55,6 @@ function ExpertDoctors() {
 
               return (
                 <Card key={doctor._id} className="relative rounded-2xl border border-slate-200 p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
-                  <button type="button" className="absolute right-5 top-5 rounded-full border border-blue-100 bg-white p-2 text-blue-600 shadow-sm">
-                    <Heart className="h-4 w-4" aria-hidden="true" />
-                  </button>
                   <div className="mx-auto flex h-28 w-28 items-center justify-center overflow-hidden rounded-full bg-gradient-to-br from-blue-100 to-blue-300 text-3xl font-black text-blue-700">
                     {avatar ? (
                       <img src={avatar} alt={fullName} className="h-full w-full object-cover" />

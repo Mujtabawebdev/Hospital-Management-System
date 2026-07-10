@@ -6,6 +6,7 @@ import { Doctor } from "../models/doctor.model.js";
 import { USER_ROLES } from "../constants/roles.js";
 import { sendAuthResponse, publicUser } from "../utils/auth-response.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
+import { issueEmailOtp } from "../services/email-verification.service.js";
 
 const normalizeAddress = (address) => {
   if (typeof address === "string") {
@@ -37,7 +38,8 @@ export const patientRegister = asyncHandler(async (req, res) => {
     role: USER_ROLES.PATIENT,
   });
 
-  return sendAuthResponse(res, createdUser, "Patient registered successfully", 201);
+  await issueEmailOtp(createdUser);
+  res.status(201).json(new ApiResponse(201, { email: createdUser.email, role: createdUser.role }, "Verification code sent to your email"));
 });
 
 export const getUserDetails = asyncHandler(async (req, res) => {

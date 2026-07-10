@@ -127,22 +127,22 @@ function LoginPage() {
               Login
             </Button>
           </form>
-          <div className="flex justify-between text-sm md:text-lg">
+          <div className="grid gap-2 text-sm sm:grid-cols-3">
             <Link
               to="/signup"
-              className="text-blue-600 hover:underline"
+              className="rounded-xl border border-blue-200 px-3 py-2 text-center font-bold text-blue-600 hover:bg-blue-50"
             >
               Create Account
             </Link>
             <Link
               to="/doctor/signup"
-              className="text-blue-600 hover:underline"
+              className="rounded-xl border border-blue-200 px-3 py-2 text-center font-bold text-blue-600 hover:bg-blue-50"
             >
               Register as Doctor
             </Link>
             <Link
               to="/"
-              className="text-blue-600 hover:underline"
+              className="rounded-xl border border-blue-200 px-3 py-2 text-center font-bold text-blue-600 hover:bg-blue-50"
             >
               Forgot Password?
             </Link>

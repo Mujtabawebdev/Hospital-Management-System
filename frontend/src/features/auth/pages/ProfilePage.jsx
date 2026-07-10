@@ -4,6 +4,7 @@ import { Edit2, MapPin, UserCircle } from "lucide-react";
 import { Button, Card, Input, Select, Textarea } from "../../../shared/components/ui";
 import { Context } from "../../../shared/context/AppContext.jsx";
 import { getCurrentUser, updateCurrentUser } from "../api/authApi.js";
+import api from "../../../shared/api/httpClient.jsx";
 
 const dateForInput = (value) => (value ? new Date(value).toISOString().split("T")[0] : "");
 const formatDate = (value) => (value ? new Date(value).toLocaleDateString() : "-");
@@ -182,6 +183,7 @@ function ProfilePage() {
   };
 
   const isDoctor = activeUser?.role === "Doctor";
+  const isDoctorApproved = !isDoctor || profile.status === "Approved";
   const imageUrl = getProfileImageUrl(profile) || previewUrl;
   const fullName = `${displayValue(profile.firstName)} ${displayValue(profile.lastName)}`.trim();
   const location = [
@@ -212,7 +214,7 @@ function ProfilePage() {
     <section className="mx-auto my-8 max-w-6xl px-4">
       <div className="mb-6 flex items-center justify-between gap-4">
         <h1 className="text-2xl font-black text-slate-900">My Profile</h1>
-        {!isEditing && (
+        {!isEditing && isDoctorApproved && (
           <button
             type="button"
             onClick={() => setIsEditing(true)}
@@ -223,6 +225,14 @@ function ProfilePage() {
           </button>
         )}
       </div>
+
+      {isDoctor && !isDoctorApproved && (
+        <Card className="mb-6 border border-amber-200 bg-amber-50 p-5">
+          <p className="font-black text-amber-900">Application status: {profile.status === "Rejected" ? "Rejected" : "Under review"}</p>
+          <p className="mt-2 text-sm font-semibold text-amber-800">Your dashboard and all doctor operations stay disabled until an administrator approves your application.</p>
+          {profile.status === "Rejected" && <Button className="mt-4" onClick={async () => { try { const { data } = await api.post("/user/doctor/resubmit"); setProfile(data.data); setUser(data.data); toast.success(data.message); } catch (error) { toast.error(error.response?.data?.message || "Could not submit again"); } }}>Request review again</Button>}
+        </Card>
+      )}
 
       <Card className="mb-6 border-none bg-white p-6 shadow-sm">
         <div className="flex flex-col gap-5 md:flex-row md:items-center">

@@ -5,6 +5,7 @@ import { User } from "../models/user.model.js";
 import { Doctor } from "../models/doctor.model.js";
 import { DOCTOR_STATUS, USER_ROLES } from "../constants/roles.js";
 import { cookieNameForRole, sendAuthResponse } from "../utils/auth-response.js";
+import { issueEmailOtp, otpMatches } from "../services/email-verification.service.js";
 
 const findPrincipalByRole = async (email, role) => {
   if (role === USER_ROLES.DOCTOR) {
@@ -27,9 +28,7 @@ export const login = asyncHandler(async (req, res) => {
     throw new ApiError(401, "Invalid email or password");
   }
 
-  if (role === USER_ROLES.DOCTOR && user.status !== DOCTOR_STATUS.APPROVED) {
-    throw new ApiError(403, `Doctor account is ${user.status}. Admin approval is required before login.`);
-  }
+  if (user.emailVerified === false) throw new ApiError(403, "Please verify your email before logging in");
 
   return sendAuthResponse(res, user, "Logged in successfully");
 });
@@ -46,3 +45,25 @@ const logout = (role) => (req, res) =>
 export const logoutAdmin = logout(USER_ROLES.ADMIN);
 export const logoutPatient = logout(USER_ROLES.PATIENT);
 export const logoutDoctor = logout(USER_ROLES.DOCTOR);
+
+export const verifyEmail = asyncHandler(async (req, res) => {
+  const { email, role, otp } = req.body;
+  const Model = role === USER_ROLES.DOCTOR ? Doctor : User;
+  const account = await Model.findOne(role === USER_ROLES.DOCTOR ? { email } : { email, role })
+    .select("+password +emailVerificationOtp +emailVerificationExpires");
+  if (!account || !otpMatches(account, otp)) throw new ApiError(400, "Verification code is invalid or expired");
+  account.emailVerified = true;
+  account.emailVerificationOtp = undefined;
+  account.emailVerificationExpires = undefined;
+  await account.save({ validateBeforeSave: false });
+  return sendAuthResponse(res, account, "Email verified successfully");
+});
+
+export const resendEmailOtp = asyncHandler(async (req, res) => {
+  const { email, role } = req.body;
+  const account = await findPrincipalByRole(email, role);
+  if (!account) throw new ApiError(404, "Account not found");
+  if (account.emailVerified) throw new ApiError(400, "Email is already verified");
+  await issueEmailOtp(account);
+  res.status(200).json(new ApiResponse(200, null, "A new verification code was sent"));
+});

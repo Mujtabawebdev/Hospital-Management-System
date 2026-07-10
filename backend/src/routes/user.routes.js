@@ -1,7 +1,7 @@
 import express from "express";
 import { getUserDetails, getDoctorDetails, updateDoctorProfile, updateUserProfile } from "../controllers/user.controller.js";
-import { getAdminDoctors, getAllDoctors, updateDoctorStatus } from "../controllers/doctor.controller.js";
-import { authenticate, isAdminAuthenticated, isPatientAuthenticated, isDoctorAuthenticated } from "../middleware/auth.middleware.js"
+import { getAdminDoctors, getAllDoctors, updateDoctorStatus, resubmitDoctorApplication } from "../controllers/doctor.controller.js";
+import { authenticate, isAdminAuthenticated, isPatientAuthenticated, isDoctorAuthenticated, isDoctorSessionAuthenticated } from "../middleware/auth.middleware.js"
 import { USER_ROLES } from "../constants/roles.js";
 import { upload } from "../middleware/multer.middleware.js";
 
@@ -14,7 +14,8 @@ router.patch("/doctor/:doctorId/status", isAdminAuthenticated, updateDoctorStatu
 router.get("/alldoctors", getAllDoctors);
 router.get("/admin/me", isAdminAuthenticated, getUserDetails);
 router.get("/patient/me", isPatientAuthenticated, getUserDetails);
-router.get("/doctor/me", isDoctorAuthenticated, getDoctorDetails);
+router.get("/doctor/me", isDoctorSessionAuthenticated, getDoctorDetails);
+router.post("/doctor/resubmit", isDoctorSessionAuthenticated, resubmitDoctorApplication);
 router.patch("/admin/me", isAdminAuthenticated, upload.single("profilePicture"), updateUserProfile);
 router.patch("/patient/me", isPatientAuthenticated, upload.single("profilePicture"), updateUserProfile);
 router.patch("/doctor/me", isDoctorAuthenticated, upload.single("profilePicture"), updateDoctorProfile);

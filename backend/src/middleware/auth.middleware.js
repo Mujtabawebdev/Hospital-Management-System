@@ -39,10 +39,6 @@ export const authenticate = (...allowedRoles) =>
       throw new ApiError(401, "Authenticated account no longer exists");
     }
 
-    if (principal.role === USER_ROLES.DOCTOR && principal.status !== DOCTOR_STATUS.APPROVED) {
-      throw new ApiError(403, "Doctor account is not active");
-    }
-
     req.user = principal;
     req.doctor = principal.role === USER_ROLES.DOCTOR ? principal : undefined;
     next();
@@ -50,4 +46,10 @@ export const authenticate = (...allowedRoles) =>
 
 export const isAdminAuthenticated = authenticate(USER_ROLES.ADMIN);
 export const isPatientAuthenticated = authenticate(USER_ROLES.PATIENT);
-export const isDoctorAuthenticated = authenticate(USER_ROLES.DOCTOR);
+export const isDoctorSessionAuthenticated = authenticate(USER_ROLES.DOCTOR);
+export const isDoctorAuthenticated = [
+  isDoctorSessionAuthenticated,
+  (req, res, next) => req.doctor.status === DOCTOR_STATUS.APPROVED
+    ? next()
+    : next(new ApiError(403, `Doctor application is ${req.doctor.status}`)),
+];
