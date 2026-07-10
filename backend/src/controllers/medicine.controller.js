@@ -30,11 +30,11 @@ export const addNewMedicine = asyncHandler(async (req, res) => {
     }
 
     // Medicine Image
-    const medicineImageLocalPath = req.file?.path;
-    if (!medicineImageLocalPath) {
-        throw new ApiError(400, "Medicine Image Path Not Found!");
+    const medicineImageBuffer = req.file?.buffer;
+    if (!medicineImageBuffer) {
+        throw new ApiError(400, "Medicine image is required!");
     }
-    const medicineImage = await uploadOnCloudinary(medicineImageLocalPath);
+    const medicineImage = await uploadOnCloudinary(medicineImageBuffer);
     if (!medicineImage) {
         throw new ApiError(400, "Medicine Image is required")
     }
@@ -47,7 +47,7 @@ export const addNewMedicine = asyncHandler(async (req, res) => {
         manufacturer,
         stock,
         discount: discount ?? 0,
-        image: medicineImage.url,
+        image: medicineImage.secure_url || medicineImage.url,
     });
 
     return res.
@@ -149,12 +149,12 @@ export const updateMedicine = asyncHandler(async (req, res) => {
     }
     if (stock !== undefined) updateFields.stock = stock;
     if (discount !== undefined) updateFields.discount = discount;
-    if (req.file?.path) {
-        const medicineImage = await uploadOnCloudinary(req.file.path);
+    if (req.file?.buffer) {
+        const medicineImage = await uploadOnCloudinary(req.file.buffer);
         if (!medicineImage) {
             throw new ApiError(400, "Medicine image upload failed");
         }
-        updateFields.image = medicineImage.url;
+        updateFields.image = medicineImage.secure_url || medicineImage.url;
     }
 
     const medicine = await Medicine.findByIdAndUpdate(

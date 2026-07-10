@@ -81,15 +81,15 @@ const normalizeProfilePayload = (payload) => {
 
 const uploadProfilePicture = async (req) => {
   const file = req.file || req.files?.profilePicture?.[0];
-  if (!file?.path) return undefined;
+  if (!file?.buffer) return undefined;
 
-  const uploaded = await uploadOnCloudinary(file.path);
+  const uploaded = await uploadOnCloudinary(file.buffer);
   if (!uploaded) {
     throw new ApiError(400, "Profile picture upload failed");
   }
 
   return {
-    url: uploaded.url,
+    url: uploaded.secure_url || uploaded.url,
     publicId: uploaded.public_id,
   };
 };

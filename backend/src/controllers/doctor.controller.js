@@ -50,30 +50,30 @@ const uploadDoctorFiles = async (req) => {
   const documentFiles = files.documents || [];
   const uploads = {};
 
-  if (profileFile?.path) {
-    const profilePicture = await uploadOnCloudinary(profileFile.path);
+  if (profileFile?.buffer) {
+    const profilePicture = await uploadOnCloudinary(profileFile.buffer);
     if (!profilePicture) {
       throw new ApiError(400, "Profile picture upload failed");
     }
 
     uploads.profilePicture = {
-      url: profilePicture.url,
+      url: profilePicture.secure_url || profilePicture.url,
       publicId: profilePicture.public_id,
     };
   }
 
   uploads.documents = await Promise.all(
     documentFiles
-      .filter((file) => file.path)
+      .filter((file) => file.buffer)
       .map(async (file) => {
-        const uploaded = await uploadOnCloudinary(file.path);
+        const uploaded = await uploadOnCloudinary(file.buffer);
         if (!uploaded) {
           throw new ApiError(400, `Document upload failed: ${file.originalname}`);
         }
 
         return {
           name: file.originalname,
-          url: uploaded.url,
+          url: uploaded.secure_url || uploaded.url,
           publicId: uploaded.public_id,
         };
       }),

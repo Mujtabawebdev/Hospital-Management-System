@@ -17,13 +17,13 @@ export const addNewTestimonial = asyncHandler(async (req, res, next) => {
     console.log(req.body);
 
     // testimonialImage
-    const testimonialImgLocalPath = req.file?.path;
+    const testimonialImgBuffer = req.file?.buffer;
 
-    if (!testimonialImgLocalPath) {
-        throw new ApiError(400, "Testimonial Image Path Not Found!");
+    if (!testimonialImgBuffer) {
+        throw new ApiError(400, "Testimonial image is required!");
     }
 
-    const testimonialImg = await uploadOnCloudinary(testimonialImgLocalPath);
+    const testimonialImg = await uploadOnCloudinary(testimonialImgBuffer);
     if (!testimonialImg) {
         throw new ApiError(400, "Testimonial Image is required")
     }
@@ -35,7 +35,7 @@ export const addNewTestimonial = asyncHandler(async (req, res, next) => {
         country,
         state,
         review,
-        testimonialImg: testimonialImg.url,
+        testimonialImg: testimonialImg.secure_url || testimonialImg.url,
     });
 
     res
@@ -52,4 +52,3 @@ export const getAllTestimonial = asyncHandler(async (req, res, next) => {
         .status(200)
         .json(new ApiResponse(200, testimonials, " TESTIMONIALS  LIST"));
 });
-
