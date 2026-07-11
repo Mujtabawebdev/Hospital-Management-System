@@ -26,7 +26,8 @@ const initialForm = {
   pincode: "",
   biography: "",
   availableDay: "Monday",
-  availableSlots: "",
+  startTime: "",
+  endTime: "",
   profilePicture: null,
   documents: [],
 };
@@ -36,10 +37,7 @@ const appendDoctorForm = (form) => {
   const availability = [
     {
       day: form.availableDay,
-      slots: form.availableSlots
-        .split(",")
-        .map((slot) => slot.trim())
-        .filter(Boolean),
+      slots: [`${form.startTime} - ${form.endTime}`],
     },
   ];
   const address = {
@@ -141,8 +139,8 @@ function AdminAddDoctorPage() {
       return;
     }
 
-    if (!form.availableSlots.trim()) {
-      toast.error("Please add at least one available slot");
+    if (!form.startTime || !form.endTime || form.startTime >= form.endTime) {
+      toast.error("Please choose a valid available time range");
       return;
     }
 
@@ -210,7 +208,22 @@ function AdminAddDoctorPage() {
               <option value="Saturday">Saturday</option>
               <option value="Sunday">Sunday</option>
             </Select>
-            <Input label="Available Slots" name="availableSlots" value={form.availableSlots} onChange={handleChange} placeholder="10:00 AM, 11:30 AM" required />
+            <Select label="From" name="startTime" value={form.startTime} onChange={handleChange} required>
+              <option value="">Start time</option>
+              {Array.from({ length: 24 }, (_, i) => `${String(i).padStart(2, "0")}:00`).map((time) => (
+                <option key={time} value={time}>
+                  {time}
+                </option>
+              ))}
+            </Select>
+            <Select label="To" name="endTime" value={form.endTime} onChange={handleChange} required>
+              <option value="">End time</option>
+              {Array.from({ length: 24 }, (_, i) => `${String(i).padStart(2, "0")}:00`).map((time) => (
+                <option key={time} value={time}>
+                  {time}
+                </option>
+              ))}
+            </Select>
             <div className="md:col-span-2 xl:col-span-4">
               <Input label="Profile Picture" type="file" name="profilePicture" onChange={handleChange} accept="image/*" />
               {previewUrl && (
